@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXIOM - Core Dashboard</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --glow: #1a1a2e;
+      --accent: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success: #10b981;
+      --warn: #f59e0b;
+      --critical: #ef4444;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Courier New', monospace; 
+      background: var(--bg); 
+      color: #e0e0e0; 
+      height: 100vh; 
+      overflow: hidden;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      height: 100vh;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    /* LEFT: Hex Radar + Integrity */
+    .radar-panel {
+      background: var(--glow);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .hex-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .hex-radar {
+      width: 300px; height: 260px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      background: var(--accent);
+      opacity: 0.3;
+      position: relative;
+      transition: all 0.5s ease;
+      animation: pulse 3s infinite;
+    }
+
+    .hex-vertex {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: var(--success);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    .vertex-mental { top: 5%; left: 50%; transform: translateX(-50%); }
+    .vertex-physical { top: 20%; right: 5%; }
+    .vertex-technical { bottom: 20%; right: 5%; }
+    .vertex-social { bottom: 20%; left: 5%; }
+    .vertex-finance { top: 20%; left: 5%; }
+    .vertex-creative { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+    .vertex-low { background: var(--critical); box-shadow: 0 0 10px var(--critical); }
+
+    .integrity-ring {
+      width: 150px; height: 150px;
+      border: 8px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      position: relative;
+      margin: 1rem 0;
+    }
+
+    .integrity-fill {
+      position: absolute;
+      top: -8px; left: -8px;
+      width: 150px; height: 150px;
+      border: 8px solid var(--success);
+      border-radius: 50%;
+      clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+      transform: rotate(-90deg);
+      transition: transform 1s ease;
+    }
+
+    .integrity-text {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* RIGHT: Command + Feed */
+    .command-panel {
+      background: rgba(0,0,0,0.4);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .command-input {
+      position: relative;
+    }
+
+    .cmd-prompt {
+      position: absolute;
+      left: 1rem; top: 50%; transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+    }
+
+    #cmdInput {
+      width: 100%; padding: 1rem 1rem 1rem 4rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    #cmdInput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 20px var(--accent); }
+
+    .live-feed {
+      flex: 1;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      padding: 1rem;
+      max-height: 300px;
+    }
+
+    .feed-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .quick-btn {
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .dashboard { grid-template-columns: 1fr; padding: 1rem; }
+      .hex-radar { width: 250px; height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- LEFT: Radar Panel -->
+    <div class="radar-panel">
+      <div class="hex-container">
+        <div class="hex-radar" id="hexRadar"></div>
+        
+        <!-- Vertex Dots -->
+        <div class="hex-vertex vertex-mental" data-cat="mental" data-val="87"></div>
+        <div class="hex-vertex vertex-physical" data-cat="physical" data-val="72"></div>
+        <div class="hex-vertex vertex-technical" data-cat="technical" data-val="94"></div>
+        <div class="hex-vertex vertex-social" data-cat="social" data-val="65"></div>
+        <div class="hex-vertex vertex-finance" data-cat="finance" data-val="81"></div>
+        <div class="hex-vertex vertex-creative" data-cat="creative" data-val="59"></div>
+      </div>
+
+      <div style="text-align: center;">
+        <div class="integrity-ring">
+          <div class="integrity-fill" id="integrityFill"></div>
+        </div>
+        <div class="integrity-text" id="integrityText">78%</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Command Panel -->
+    <div class="command-panel">
+      <div class="command-input">
+        <span class="cmd-prompt">Ctrl+K → log gym 60m --mood 8</span>
+        <input type="text" id="cmdInput" placeholder="Enter command..." autocomplete="off">
+      </div>
+
+      <div class="quick-actions">
+        <button class="quick-btn" data-log="gym">Gym Done</button>
+        <button class="quick-btn" data-log="code">Code 2h</button>
+        <button class="quick-btn" data-log="read">Read 30m</button>
+        <button class="quick-btn" data-log="social">Social</button>
+      </div>
+
+      <div class="live-feed" id="liveFeed">
+        <div class="feed-item">→ Uplink Established</div>
+        <div class="feed-item">→ System Integrity: 78%</div>
+        <div class="feed-item">→ Ready for calibration</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Management
+    const state = {
+      integrity: 78,
+      categories: {
+        mental: 87, physical: 72, technical: 94,
+        social: 65, finance: 81, creative: 59
+      },
+      init() {
+        this.updateIntegrityRing();
+        this.bindEvents();
+        this.startDecay();
+      },
+      updateIntegrityRing() {
+        const fill = document.getElementById('integrityFill');
+        const text = document.getElementById('integrityText');
+        const angle = (this.integrity / 100) * 360 - 90;
+        fill.style.transform = `rotate(${angle}deg)`;
+        text.textContent = `${this.integrity}%`;
+      },
+      logActivity(cat, xp = 10) {
+        this.categories[cat] = Math.min(100, this.categories[cat] + xp);
+        this.integrity = Math.min(100, this.integrity + xp * 0.5);
+        
+        // Update vertex
+        const vertex = document.querySelector(`[data-cat="${cat}"]`);
+        vertex.classList.remove('vertex-low');
+        vertex.style.transform = `scale(1.3)`;
+        setTimeout(() => vertex.style.transform = '', 300);
+        
+        this.updateIntegrityRing();
+        this.addFeedItem(`→ ${cat.charAt(0).toUpperCase() + cat.slice(1)} +${xp}XP`);
+      },
+      addFeedItem(message) {
+        const feed = document.getElementById('liveFeed');
+        const item = document.createElement('div');
+        item.className = 'feed-item';
+        item.style.transform = 'translateY(10px)';
+        item.textContent = message;
+        feed.insertBefore(item, feed.firstChild);
+        feed.scrollTop = 0;
+        
+        // Keep only 5 items
+        while (feed.children.length > 5) {
+          feed.removeChild(feed.lastChild);
+        }
+      },
+      startDecay() {
+        setInterval(() => {
+          if (this.integrity > 0) {
+            this.integrity -= 0.1;
+            this.updateIntegrityRing();
+          }
+        }, 3000);
+      },
+      bindEvents() {
+        // Command input
+        const cmdInput = document.getElementById('cmdInput');
+        cmdInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const cmd = cmdInput.value.toLowerCase().trim();
+            cmdInput.value = '';
+            
+            if (cmd.includes('gym')) this.logActivity('physical', 15);
+            else if (cmd.includes('code') || cmd.includes('work')) this.logActivity('technical', 12);
+            else if (cmd.includes('read')) this.logActivity('mental', 8);
+          }
+        });
+
+        // Quick buttons
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const log = btn.dataset.log;
+            if (log === 'gym') this.logActivity('physical', 15);
+            else if (log === 'code') this.logActivity('technical', 12);
+            else if (log === 'read') this.logActivity('mental', 8);
+            else if (log === 'social') this.logActivity('social', 10);
+          });
+        });
+
+        // Ctrl+K focus
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            cmdInput.focus();
+          }
+        });
+      }
+    };
+
+    // PWA Service Worker (offline ready)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    state.init();
+  </script>
+</body>
+</html>
