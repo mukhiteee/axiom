@@ -1,0 +1,10 @@
+// Update Categories
+// Add Start Date and End Date to add habits form
+// Make Habit Filter work
+// Habits title should display habit description on hover
+// Update checkin form to contain [Difficulty, How you feel?, Notes, Time of the day]
+Brainstorm on weather tracking
+A modal should be displayed when disabled and empty checkin is hovered
+CheckIn details should be displayed when a filled box is hovered
+Habits details modal should be displayed when habit title is clicked
+Habit title clickable

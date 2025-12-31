@@ -1,0 +1,285 @@
+<!-- Habits Page - Spreadsheet View -->
+<div class="page-container">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>My Habits</h1>
+      <p id="habits-count">Loading...</p>
+    </div>
+    <button class="btn-primary" id="add-habit-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add New Habit
+    </button>
+  </div>
+  
+  <!-- Filters & Controls -->
+  <div class="habits-controls">
+    <div class="month-navigator">
+      <button class="btn-icon" id="prev-month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <span class="current-month" id="current-month">December 2024</span>
+      <button class="btn-icon" id="next-month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="habits-filters">
+      <select class="filter-select" id="category-filter">
+      <option value="all">All Categories</option>
+      <option value="physical">Physical 🏃‍♂️</option>
+      <option value="mental">Mental 🧠</option>
+      <option value="social">Social 👥</option>
+      <option value="educational">Educational 📚</option>
+      <option value="productivity">Productivity 📊</option>
+      <option value="spiritual">Spiritual 🙏</option>
+      <option value="wellness">Wellness ❤️</option>
+    </select>
+    </div>
+  </div>
+  
+  <!-- Habits Spreadsheet -->
+  <div class="habits-spreadsheet-container">
+    <div class="habits-spreadsheet" id="habits-spreadsheet">
+      
+      <!-- Loading State -->
+      <div class="spreadsheet-loading">
+        <div class="spinner"></div>
+        <p>Loading habits...</p>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Empty State (Hidden initially) -->
+  <div class="empty-state" id="empty-habits" style="display: none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M9 11l3 3 5-5"/>
+    </svg>
+    <h3>No habits yet</h3>
+    <p>Create your first habit to get started on your journey</p>
+    <button class="btn-primary" id="create-first-habit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Create Your First Habit
+    </button>
+  </div>
+  
+</div>
+
+<!-- Add Habit Modal -->
+<div class="modal-overlay" id="add-habit-modal" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Add New Habit</h2>
+      <button class="modal-close" id="close-add-habit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    
+    <form class="modal-body" id="add-habit-form">
+      
+      <!-- Habit Name -->
+      <div class="form-field">
+        <label for="habit-name">Habit Name *</label>
+        <input 
+          type="text" 
+          id="habit-name" 
+          placeholder="e.g., Morning Workout"
+          required>
+      </div>
+      
+      <!-- Description -->
+      <div class="form-field">
+        <label for="habit-description">Description</label>
+        <textarea 
+          id="habit-description" 
+          rows="2"
+          placeholder="What does this habit involve?"></textarea>
+      </div>
+      
+      <!-- Color Picker -->
+      <div class="form-field">
+        <label for="habit-color">Color *</label>
+        <div class="color-picker-wrapper">
+          <input 
+            type="color" 
+            id="habit-color" 
+            value="#22d3ee">
+          <div class="color-preview" id="color-preview"></div>
+          <button type="button" class="btn-sm" id="randomize-color">Randomize</button>
+        </div>
+      </div>
+      
+      <!-- Frequency -->
+      <div class="form-field">
+        <label>Frequency *</label>
+        <div class="frequency-options">
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="daily" checked>
+            <span>Everyday</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="custom-days">
+            <span>Custom Days</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="per-week">
+            <span>X times per week</span>
+          </label>
+        </div>
+        
+        <!-- Custom Days Selection (Hidden by default) -->
+        <div class="custom-days" id="custom-days" style="display: none;">
+          <label class="day-checkbox"><input type="checkbox" value="1"> Mon</label>
+          <label class="day-checkbox"><input type="checkbox" value="2"> Tue</label>
+          <label class="day-checkbox"><input type="checkbox" value="3"> Wed</label>
+          <label class="day-checkbox"><input type="checkbox" value="4"> Thu</label>
+          <label class="day-checkbox"><input type="checkbox" value="5"> Fri</label>
+          <label class="day-checkbox"><input type="checkbox" value="6"> Sat</label>
+          <label class="day-checkbox"><input type="checkbox" value="0"> Sun</label>
+        </div>
+        
+        <!-- Per Week Input (Hidden by default) -->
+        <div class="per-week-input" id="per-week-input" style="display: none;">
+          <input type="number" min="1" max="7" value="3"> times per week
+        </div>
+      </div>
+      
+      <!-- Category -->
+      <div class="form-field">
+          <label for="habit-category">Category *</label>
+          <select id="habit-category" required>
+              <option value="">Select category</option>
+              <option value="physical">🏃‍♂️ Physical</option>
+              <option value="mental">🧠 Mental</option>
+              <option value="social">👥 Social</option>
+              <option value="educational">📚 Educational</option>
+              <option value="productivity">📊 Productivity</option>
+              <option value="spiritual">🙏 Spiritual</option>
+              <option value="wellness">❤️ Wellness</option>
+          </select>
+          <p id="category-desc" class="field-help-text"></p>
+      </div>
+
+      <div class="form-field">
+        <label>Habit Period </label>
+        <div class="duration-input">
+          <input 
+            type="date" 
+            id="habit-start-date" 
+            required 
+            placeholder="Start Date">
+          <span class="date-separator">to</span>
+          <input 
+            type="date" 
+            id="habit-end-date" 
+            placeholder="End Date (Optional)">
+        </div>
+      </div>
+      
+      <!-- Duration -->
+      <div class="form-field">
+        <label for="habit-duration">Duration</label>
+        <div class="duration-input">
+          <input type="number" id="habit-duration" min="1" placeholder="30">
+          <select id="duration-unit">
+            <option value="minutes">minutes</option>
+            <option value="hours">hours</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Expected Time -->
+      <div class="form-field">
+        <label for="habit-time">Expected Time of Day</label>
+        <input type="time" id="habit-time">
+      </div>
+      
+      <!-- Public Toggle -->
+      <div class="form-field">
+        <label class="toggle-label">
+          <input type="checkbox" id="habit-public">
+          <span class="toggle-switch"></span>
+          <span>Make this habit public</span>
+        </label>
+      </div>
+      
+    </form>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="cancel-add-habit">Cancel</button>
+      <button type="submit" class="btn-primary" id="save-habit">Create Habit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Check-in Modal (When clicking checkbox) -->
+<div class="modal-overlay" id="checkin-modal" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="checkin-habit-name">Log Habit</h2>
+      <button class="modal-close" id="close-checkin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Difficulty *</label>
+        <div class="difficulty-scale">
+          <button type="button" class="difficulty-btn" data-value="1">😊 Easy</button>
+          <button type="button" class="difficulty-btn" data-value="2">😐 Medium</button>
+          <button type="button" class="difficulty-btn" data-value="3">😓 Hard</button>
+        </div>
+      </div>
+      
+      <div class="form-field">
+        <label>How do you feel? *</label>
+        <div class="mood-picker">
+          <button type="button" class="mood-btn" data-mood="terrible">😢</button>
+          <button type="button" class="mood-btn" data-mood="bad">😞</button>
+          <button type="button" class="mood-btn" data-mood="okay">😐</button>
+          <button type="button" class="mood-btn" data-mood="good">🙂</button>
+          <button type="button" class="mood-btn" data-mood="great">😊</button>
+        </div>
+      </div>
+
+      <div class="form-field" id="checkin-duration-field" style="display: none;">
+        <label>Duration Spent (<span id="dur-unit-text">mins</span>)</label>
+        <input type="number" id="checkin-actual-duration" class="form-input" placeholder="Enter time spent">
+      </div>
+
+      <div class="form-field" id="checkin-time-field" style="display: none;">
+        <label>Time of Day</label>
+        <input type="time" id="checkin-time-input" class="form-input">
+      </div>
+      
+      <div class="form-field">
+        <label for="checkin-notes">Notes</label>
+        <textarea id="checkin-notes" rows="3" placeholder="Any reflections on today's session?"></textarea>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="cancel-checkin">Cancel</button>
+      <button type="button" class="btn-primary" id="save-checkin">Save Check-in</button>
+    </div>
+  </div>
+</div>

@@ -1,54 +1,49 @@
 /**
- * AXIOM Authentication
- * Handles sign in form submission
+ * AXIOM Authentication & Session Management
  */
 
 class AxiomAuth {
   constructor() {
-    this.form = document.getElementById('signin-form');
-    this.errorEl = document.getElementById('auth-error');
-    this.init();
+    this.SESSION_KEY = 'axiom-session';
+    this.USER_KEY = 'axiom-user';
+    this.SESSION_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
   }
   
-  init() {
-    if (this.form) {
-      this.form.addEventListener('submit', (e) => this.handleSignIn(e));
+  /**
+   * Check if user is authenticated
+   */
+  isAuthenticated() {
+    const session = localStorage.getItem(this.SESSION_KEY);
+    const user = localStorage.getItem(this.USER_KEY);
+    
+    if (!session || !user) return false;
+    
+    // Check session expiry
+    const sessionData = JSON.parse(session);
+    const now = Date.now();
+    
+    if (now - sessionData.timestamp > this.SESSION_DURATION) {
+      this.logout();
+      return false;
     }
     
-    // Update theme button states when theme changes
-    document.addEventListener('theme-changed', (e) => {
-      this.updateThemeButtons(e.detail.theme);
-    });
-    
-    // Set initial theme button state
-    this.updateThemeButtons(window.themeManager.getCurrentTheme());
+    return true;
   }
   
-  async handleSignIn(e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    
-    if (!username || !password) {
-      this.showError('Username and password are required');
-      return;
-    }
-    
-    this.setLoading(true);
-    this.clearError();
-    
-    // TODO: Connect to PHP API
-    // For now, simulate auth
-    setTimeout(() => {
-      this.showError('API not connected yet. Please set up backend first.');
-      this.setLoading(false);
-    }, 1000);
-    
-    /*
-    // Uncomment when API is ready:
+  /**
+   * Get current user
+   */
+  getUser() {
+    const user = localStorage.getItem(this.USER_KEY);
+    return user ? JSON.parse(user) : null;
+  }
+  
+  /**
+   * Login user
+   */
+  async login(username, password) {
     try {
-      const response = await fetch('/api/auth.php?action=login', {
+      const response = await fetch('api/auth.php?action=login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -57,55 +52,176 @@ class AxiomAuth {
       const result = await response.json();
       
       if (!result.success) {
-        throw new Error(result.error || 'Authentication failed');
+        throw new Error(result.error || 'Login failed');
       }
       
-      // Success: redirect to dashboard
-      window.location.href = '/dashboard.php';
+      // Store user and session
+      localStorage.setItem(this.USER_KEY, JSON.stringify(result.data.user));
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        userId: result.data.user.id
+      }));
+      
+      return result.data.user;
       
     } catch (error) {
-      this.showError(error.message);
-      this.setLoading(false);
-    }
-    */
-  }
-  
-  showError(message) {
-    if (this.errorEl) {
-      this.errorEl.textContent = `ERROR: ${message}`;
-      this.errorEl.style.display = 'block';
+      console.error('[AUTH] Login error:', error);
+      throw error;
     }
   }
   
-  clearError() {
-    if (this.errorEl) {
-      this.errorEl.style.display = 'none';
-      this.errorEl.textContent = '';
+  /**
+   * Logout user
+   */
+  async logout() {
+    try {
+      // Call server logout
+      await fetch('api/auth.php?action=logout', { method: 'POST' });
+    } catch (error) {
+      console.error('[AUTH] Logout API error:', error);
     }
+    
+    // Clear local data
+    localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(this.SESSION_KEY);
+    
+    // Redirect to login
+    window.location.href = 'index.html';
   }
   
-  setLoading(isLoading) {
-    const submitBtn = this.form.querySelector('button[type="submit"]');
-    if (submitBtn) {
-      submitBtn.disabled = isLoading;
-      submitBtn.querySelector('span').textContent = isLoading ? 'PROCESSING...' : 'AUTHENTICATE';
+  /**
+   * Require authentication (redirect if not logged in)
+   */
+  requireAuth() {
+    if (!this.isAuthenticated()) {
+      console.log('[AUTH] Not authenticated, redirecting to login');
+      window.location.href = 'index.html';
+      return false;
     }
+    return true;
   }
   
-  updateThemeButtons(currentTheme) {
-    // Update active state on theme buttons
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-      const theme = btn.getAttribute('data-theme-select');
-      if (theme === currentTheme) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
+  /**
+   * Initialize auth on page load
+   */
+  init() {
+    const currentPage = window.location.pathname;
+    
+    // If on dashboard.html, require auth
+    if (currentPage.includes('dashboard.html')) {
+      if (!this.requireAuth()) return;
+      
+      // Update UI with user data
+      const user = this.getUser();
+      if (user) {
+        this.updateUI(user);
       }
-    });
+    }
+    
+    // If on index.html and already logged in, redirect
+    if (currentPage.includes('index.html') && this.isAuthenticated()) {
+      console.log('[AUTH] Already authenticated, redirecting to dashboard');
+      window.location.href = 'dashboard.html';
+    }
+  }
+  
+  /**
+   * Update UI with user data
+   */
+  updateUI(user) {
+    // Update avatar
+    const avatar = document.getElementById('user-avatar');
+    if (avatar) {
+      const initials = user.username.substring(0, 2).toUpperCase();
+      avatar.querySelector('span').textContent = initials;
+    }
+    
+    // Store in window for global access
+    window.AXIOM_USER = user;
   }
 }
 
-// Initialize
+// Create global instance
+window.AxiomAuth = new AxiomAuth();
+
+// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
-  new AxiomAuth();
+  window.AxiomAuth.init();
+  
+  // Setup login form if on index.html
+  const loginForm = document.getElementById('signin-form');
+  if (loginForm) {
+    setupLoginForm();
+  }
+  
+  // Setup logout button if on dashboard
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        window.AxiomAuth.logout();
+      }
+    });
+  }
 });
+
+/**
+ * Setup login form handler
+ */
+function setupLoginForm() {
+  const form = document.getElementById('signin-form');
+  const errorEl = document.getElementById('auth-error');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    
+    if (!username || !password) {
+      showError('Please enter your username and password');
+      return;
+    }
+    
+    setLoading(true);
+    clearError();
+    
+    try {
+      await window.AxiomAuth.login(username, password);
+      
+      // Redirect to dashboard
+      window.location.href = 'dashboard.html';
+      
+    } catch (error) {
+      showError(error.message);
+      setLoading(false);
+    }
+  });
+  
+  function showError(message) {
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+  }
+  
+  function clearError() {
+    if (errorEl) {
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+    }
+  }
+  
+  function setLoading(isLoading) {
+    const submitBtn = form.querySelector('.btn-submit');
+    if (submitBtn) {
+      submitBtn.disabled = isLoading;
+      submitBtn.textContent = isLoading ? 'SIGNING IN...' : 'SIGN IN';
+    }
+    
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.disabled = isLoading;
+    });
+  }
+}

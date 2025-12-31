@@ -73,22 +73,22 @@ class AxiomState {
     });
   }
   
-  // ═══ SERVICE WORKER REGISTRATION ═══
-  async registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('[AXIOM] Service Worker registered:', registration.scope);
-        
-        // Enable Background Sync
-        if ('sync' in registration) {
-          console.log('[AXIOM] Background Sync available');
+    // ═══ SERVICE WORKER REGISTRATION ═══
+    async registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+          console.log('[AXIOM] Service Worker registered:', registration.scope);
+          
+          // Enable Background Sync
+          if ('sync' in registration) {
+            console.log('[AXIOM] Background Sync available');
+          }
+        } catch (error) {
+          console.error('[AXIOM] Service Worker registration failed:', error);
         }
-      } catch (error) {
-        console.error('[AXIOM] Service Worker registration failed:', error);
       }
     }
-  }
   
   // ═══ THEME MANAGEMENT ═══
   setTheme(theme) {

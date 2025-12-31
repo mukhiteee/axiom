@@ -1,40 +1,66 @@
 <?php
 /**
  * AXIOM Configuration
- * Database credentials and system constants
+ * Database and system settings
  */
 
 // Prevent direct access
-if (!defined('AXIOM_ACCESS')) {
+if (!defined('AXIOM_INIT')) {
     http_response_code(403);
-    exit('Direct access forbidden');
+    die('Direct access not allowed');
 }
 
-// Database Configuration
+// ═══════════════════════════════════════════════════════════
+// DATABASE CONFIGURATION
+// ═══════════════════════════════════════════════════════════
+
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'axiom');
 define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_PASS', '');  // Change this to your MySQL password
 define('DB_CHARSET', 'utf8mb4');
 
-// Security
-define('PASSWORD_COST', 12); // bcrypt cost factor
-define('SESSION_LIFETIME', 60 * 60 * 24 * 30); // 30 days
-define('TOKEN_LENGTH', 32);
+// ═══════════════════════════════════════════════════════════
+// SECURITY SETTINGS
+// ═══════════════════════════════════════════════════════════
 
-// Timezone
-date_default_timezone_set('UTC');
+define('PASSWORD_COST', 12);           // bcrypt cost factor
+define('SESSION_LIFETIME', 2592000);   // 30 days in seconds
+define('SESSION_NAME', 'axiom_session');
 
-// Error Reporting (change in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// ═══════════════════════════════════════════════════════════
+// SYSTEM SETTINGS
+// ═══════════════════════════════════════════════════════════
 
-// CORS (adjust for production)
+define('TIMEZONE', 'UTC');
+date_default_timezone_set(TIMEZONE);
+
+// ═══════════════════════════════════════════════════════════
+// ERROR REPORTING
+// Change to 0 in production
+// ═══════════════════════════════════════════════════════════
+
+define('DEBUG_MODE', true);
+
+if (DEBUG_MODE) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0);  // Don't display in output
+    ini_set('log_errors', 1);      // Log to file instead
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CORS HEADERS (for API)
+// ═══════════════════════════════════════════════════════════
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit();
+    exit;
 }

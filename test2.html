@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+/* ═══════════════════════════════════════════════════════════
+   AXIOM // THE FIRMWARE
+   Pure CSS Variable System - Foundation Tokens
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ═══ TYPOGRAPHY SYSTEM ═══ */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Consolas', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+  
+  /* Font Weights */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 900;
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  
+  /* ═══ SPACING SYSTEM (8pt grid) ═══ */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;   /* 2px */
+  --space-1: 0.25rem;      /* 4px */
+  --space-1-5: 0.375rem;   /* 6px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-2-5: 0.625rem;   /* 10px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-3-5: 0.875rem;   /* 14px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-7: 1.75rem;      /* 28px */
+  --space-8: 2rem;         /* 32px */
+  --space-9: 2.25rem;      /* 36px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-11: 2.75rem;     /* 44px */
+  --space-12: 3rem;        /* 48px */
+  --space-14: 3.5rem;      /* 56px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+  --space-28: 7rem;        /* 112px */
+  --space-32: 8rem;        /* 128px */
+  
+  /* ═══ SIZING SYSTEM ═══ */
+  --size-full: 100%;
+  --size-screen: 100vw;
+  --size-min: min-content;
+  --size-max: max-content;
+  --size-fit: fit-content;
+  
+  /* Container Widths */
+  --container-xs: 20rem;    /* 320px */
+  --container-sm: 24rem;    /* 384px */
+  --container-md: 28rem;    /* 448px */
+  --container-lg: 32rem;    /* 512px */
+  --container-xl: 36rem;    /* 576px */
+  --container-2xl: 42rem;   /* 672px */
+  --container-3xl: 48rem;   /* 768px */
+  --container-4xl: 56rem;   /* 896px */
+  --container-5xl: 64rem;   /* 1024px */
+  --container-6xl: 72rem;   /* 1152px */
+  --container-7xl: 80rem;   /* 1280px */
+  
+  /* ═══ BORDER SYSTEM ═══ */
+  --border-0: 0;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-4: 4px;
+  --border-8: 8px;
+  
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;    /* 2px */
+  --radius-base: 0.25rem;   /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-3xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;
+  
+  /* ═══ SHADOW SYSTEM ═══ */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-base: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-2xl: 0 30px 60px -15px rgb(0 0 0 / 0.3);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  
+  /* ═══ BLUR SYSTEM ═══ */
+  --blur-none: 0;
+  --blur-sm: 4px;
+  --blur-base: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+  --blur-2xl: 40px;
+  --blur-3xl: 64px;
+  
+  /* ═══ ANIMATION TIMING ═══ */
+  --duration-0: 0ms;
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+  
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* ═══ Z-INDEX LAYERS ═══ */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  
+  /* ═══ OPACITY SCALE ═══ */
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-95: 0.95;
+  --opacity-100: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AXIOM // THEMES
+   Premium color palettes with depth and sophistication
+   ═══════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   THEME: ONYX (Dark Mode)
+   Deep, rich blacks with electric cyan accents
+   ═══════════════════════════════════════════════════════════ */
+
+[data-theme="onyx"] {
+  /* Background Layers - Rich depth */
+  --bg-base: #000000;
+  --bg-primary: #0c0c0d;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
+  --bg-elevated: #3f3f46;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+  
+  /* Primary Palette - Electric Cyan */
+  --primary-50: #ecfeff;
+  --primary-100: #cffafe;
+  --primary-200: #a5f3fc;
+  --primary-300: #67e8f9;
+  --primary-400: #22d3ee;
+  --primary-500: #06b6d4;
+  --primary-600: #0891b2;
+  --primary-700: #0e7490;
+  --primary-800: #155e75;
+  --primary-900: #164e63;
+  
+  --primary: var(--primary-400);
+  --primary-hover: var(--primary-300);
+  --primary-active: var(--primary-500);
+  
+  /* Text Hierarchy - Maximum contrast */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+  --text-disabled: #52525b;
+  --text-inverse: #09090b;
+  
+  /* Border System */
+  --border-base: #27272a;
+  --border-strong: #3f3f46;
+  --border-primary: var(--primary-600);
+  --border-focus: var(--primary-500);
+  
+  /* Semantic Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: var(--primary);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-400) 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.15), transparent 50%);
+  --gradient-mesh: radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                   radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  
+  /* Effects */
+  --glow-primary: 0 0 20px rgba(6, 182, 212, 0.3);
+  --glow-strong: 0 0 40px rgba(6, 182, 212, 0.5);
+  --backdrop-blur: blur(24px) saturate(180%);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THEME: LIGHT (Light Mode)
+   Clean, airy with deep blue accents
+   ═══════════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  /* Background Layers - Soft and clean */
+  --bg-base: #fafafa;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.9);
+  
+  /* Primary Palette - Deep Blue */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  
+  --primary: var(--primary-600);
+  --primary-hover: var(--primary-700);
+  --primary-active: var(--primary-800);
+  
+  /* Text Hierarchy */
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-tertiary: #a1a1aa;
+  --text-disabled: #d4d4d8;
+  --text-inverse: #fafafa;
+  
+  /* Border System */
+  --border-base: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --border-primary: var(--primary-400);
+  --border-focus: var(--primary-600);
+  
+  /* Semantic Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: var(--primary);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-500) 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08), transparent 50%);
+  --gradient-mesh: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+                   radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
+  
+  /* Effects */
+  --glow-primary: 0 0 20px rgba(37, 99, 235, 0.15);
+  --glow-strong: 0 0 40px rgba(37, 99, 235, 0.25);
+  --backdrop-blur: blur(24px) saturate(180%);
+}
+
+[data-theme="amethyst"] {
+  /* Background Layers - Deepest Purple/Black */
+  --bg-base: #050505;
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1e1e2e;
+  --bg-elevated: #2d2d44;
+  --bg-overlay: rgba(5, 5, 5, 0.85);
+  
+  /* Primary Palette - Electric Violet */
+  --primary-50: #f5f3ff;
+  --primary-100: #ede9fe;
+  --primary-200: #ddd6fe;
+  --primary-300: #c4b5fd;
+  --primary-400: #a78bfa;
+  --primary-500: #8b5cf6;
+  --primary-600: #7c3aed;
+  --primary-700: #6d28d9;
+  --primary-800: #5b21b6;
+  --primary-900: #4c1d95;
+  
+  --primary: var(--primary-500);
+  --primary-hover: var(--primary-400);
+  --primary-active: var(--primary-600);
+  
+  /* Text Hierarchy */
+  --text-primary: #fcfaff;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-disabled: #475569;
+  --text-inverse: #050505;
+  
+  /* Border System */
+  --border-base: #1e1e2e;
+  --border-strong: #2d2d44;
+  --border-primary: var(--primary-700);
+  --border-focus: var(--primary-500);
+
+  /* Gradients & Effects */
+  --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15), transparent 50%);
+  --glow-primary: 0 0 20px rgba(139, 92, 246, 0.35);
+}
+
+[data-theme="emerald"] {
+  /* Background Layers - Deep Forest Night */
+  --bg-base: #020617;
+  --bg-primary: #060e14;
+  --bg-secondary: #0f1719;
+  --bg-tertiary: #1a2e2a;
+  --bg-elevated: #243c37;
+  --bg-overlay: rgba(2, 6, 23, 0.85);
+  
+  /* Primary Palette - Deep Sea Emerald */
+  --primary-50: #ecfdf5;
+  --primary-100: #d1fae5;
+  --primary-200: #a7f3d0;
+  --primary-300: #6ee7b7;
+  --primary-400: #34d399;
+  --primary-500: #10b981;
+  --primary-600: #059669;
+  --primary-700: #047857;
+  --primary-800: #065f46;
+  --primary-900: #064e3b;
+  
+  --primary: var(--primary-400);
+  --primary-hover: var(--primary-300);
+  --primary-active: var(--primary-500);
+  
+  /* Text Hierarchy */
+  --text-primary: #f0fdf4;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-disabled: #334155;
+  --text-inverse: #020617;
+  
+  /* Border System */
+  --border-base: #1a2e2a;
+  --border-strong: #243c37;
+  --border-primary: var(--primary-600);
+  --border-focus: var(--primary-400);
+
+  /* Gradients & Effects */
+  --gradient-primary: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12), transparent 50%);
+  --glow-primary: 0 0 20px rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="amber"] {
+  /* Background Layers - Warm Charcoal */
+  --bg-base: #0a0a0a;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #262626;
+  --bg-elevated: #333333;
+  --bg-overlay: rgba(10, 10, 10, 0.85);
+  
+  /* Primary Palette - Safety Amber */
+  --primary-50: #fffbeb;
+  --primary-100: #fef3c7;
+  --primary-200: #fde68a;
+  --primary-300: #fcd34d;
+  --primary-400: #fbbf24;
+  --primary-500: #f59e0b;
+  --primary-600: #d97706;
+  --primary-700: #b45309;
+  --primary-800: #92400e;
+  --primary-900: #78350f;
+  
+  --primary: var(--primary-500);
+  --primary-hover: var(--primary-400);
+  --primary-active: var(--primary-600);
+  
+  /* Text Hierarchy */
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-tertiary: #737373;
+  --text-disabled: #525252;
+  --text-inverse: #0a0a0a;
+  
+  /* Border System */
+  --border-base: #262626;
+  --border-strong: #333333;
+  --border-primary: var(--primary-700);
+  --border-focus: var(--primary-500);
+
+  /* Gradients & Effects */
+  --gradient-primary: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.1), transparent 50%);
+  --glow-primary: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AXIOM // DASHBOARD
+   Main application layout - All colors from variables.css
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('variables.css');
+@import url('themes.css');
+
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  overflow: hidden;
+  height: 100vh;
+  transition: background-color var(--duration-300) var(--ease-out),
+              color var(--duration-300) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR (MINIMALIST DESIGN)
+   ═══════════════════════════════════════════════════════════ */
+
+.sidebar {
+  background: var(--bg-primary);
+  border-right: var(--border-1) solid var(--border-base);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: var(--z-sticky);
+}
+
+/* ═══ SIDEBAR HEADER ═══ */
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-8) 0 var(--space-6);
+}
+
+.sidebar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: var(--text-inverse);
+  stroke-width: 2.5;
+}
+
+/* ═══ NAVIGATION MENU ═══ */
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 0;
+}
+
+.nav-item {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: all var(--duration-200) var(--ease-out);
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+}
+
+.nav-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--glow-primary);
+}
+
+.nav-item.active .nav-icon {
+  stroke: var(--text-inverse);
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  flex-shrink: 0;
+  stroke-width: 2;
+}
+
+.nav-label {
+  display: none;
+}
+
+.nav-divider {
+  width: 40px;
+  height: var(--border-1);
+  background: var(--border-base);
+  margin: var(--space-3) 0;
+}
+
+/* ═══ SIDEBAR FOOTER ═══ */
+
+.sidebar-footer {
+  padding: var(--space-6) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  border-top: var(--border-1) solid var(--border-base);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--text-inverse);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: var(--glow-primary);
+}
+
+.user-details {
+  display: none;
+}
+
+.logout-btn {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+  color: var(--text-tertiary);
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  transform: scale(1.05);
+}
+
+.logout-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  transition: stroke var(--duration-200) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+   ═══════════════════════════════════════════════════════════ */
+
+.main-content {
+  background: var(--bg-base);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: var(--radius-base);
+}
+
+/* ═══ LOADING & ERROR STATES ═══ */
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  color: var(--text-tertiary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-base);
+  border-top-color: var(--primary);
+  border-radius: var(--radius-full);
+  animation: spin 0.8s linear infinite;
+  margin-bottom: var(--space-4);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  text-align: center;
+  min-height: 400px;
+}
+
+.error-state svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--error);
+  margin-bottom: var(--space-6);
+}
+
+.error-state h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.error-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+/* ═══ PAGE CONTAINER ═══ */
+
+.page-container {
+  padding: var(--space-8);
+  animation: fadeIn var(--duration-300) var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.page-header h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.page-header p {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+/* ═══ TOP BAR (OVERVIEW) ═══ */
+
+.top-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.greeting h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.greeting p {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+.top-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ═══ BUTTONS ═══ */
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-primary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-strong);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: var(--opacity-50);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: var(--space-3) var(--space-6);
+  background: transparent;
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-primary);
+  border-color: var(--border-strong);
+}
+
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-primary);
+}
+
+/* ═══ EMPTY STATES ═══ */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  margin: var(--space-8) auto;
+  max-width: 500px;
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--text-tertiary);
+  opacity: var(--opacity-30);
+  margin-bottom: var(--space-6);
+}
+
+.empty-state h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.empty-state-mini {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--text-tertiary);
+}
+
+.empty-state-mini p {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.content-placeholder {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: var(--bg-primary);
+  border: 2px dashed var(--border-base);
+  border-radius: var(--radius-2xl);
+  margin: var(--space-8) 0;
+}
+
+.content-placeholder h2 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+}
+
+.content-placeholder p {
+  color: var(--text-tertiary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    width: 260px;
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    padding: var(--space-4);
+  }
+  
+  .page-header,
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
+/* Habits Page Specific Styles */
+.habits-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.month-navigator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-icon:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-strong);
+}
+
+.btn-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-primary);
+}
+
+.current-month {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  min-width: 180px;
+  text-align: center;
+}
+
+.filter-select {
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+/* Spreadsheet Container */
+.habits-spreadsheet-container {
+  overflow-x: auto;
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+}
+
+.spreadsheet-loading {
+  text-align: center;
+  padding: var(--space-16);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+.modal-card {
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-2xl);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: var(--border-1) solid var(--border-base);
+}
+
+.modal-header h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-top: var(--border-1) solid var(--border-base);
+}
+
+.modal-footer button {
+  flex: 1;
+}
+
+/* Form Fields */
+.form-field {
+  margin-bottom: var(--space-6);
+}
+
+.form-field label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.form-field input[type="text"],
+.form-field input[type="time"],
+.form-field input[type="number"],
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  padding: var(--space-3);
+  background: var(--bg-secondary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.color-picker-wrapper input[type="color"] {
+  width: 60px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.color-preview {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: var(--border-1) solid var(--border-base);
+}
+
+/* Frequency Options */
+.frequency-options {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-secondary);
+  border: var(--border-2) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.radio-option:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+}
+
+/* Duration Input */
+.duration-input {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.duration-input input {
+  flex: 1;
+}
+
+.duration-input select {
+  flex: 0.8;
+}
+
+/* Difficulty & Mood Buttons */
+.difficulty-scale,
+.mood-picker {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.difficulty-btn,
+.mood-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border: var(--border-2) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.difficulty-btn:hover,
+.mood-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.difficulty-btn.selected,
+.mood-btn.selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.mood-btn {
+  font-size: var(--text-3xl);
+  min-width: auto;
+  aspect-ratio: 1;
+}
+
+.habits-spreadsheet table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    min-width: 150px;
+    background: var(--bg-primary);
+    border-right: 2px solid var(--border-base);
+}
+
+.habits-spreadsheet th, .habits-spreadsheet td {
+    padding: var(--space-3);
+    text-align: center;
+    border: 1px solid var(--border-base);
+}
+
+.today-highlight {
+    background: var(--primary-glow);
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.today-cell {
+    background: var(--primary-glow-subtle);
+}
+
+.status-icon.success { color: #10b981; font-weight: bold; }
+.status-icon.fail { color: #ef4444; font-weight: bold; }
+
+.habit-title-cell {
+    text-align: left;
+    font-weight: 600;
+    cursor: help;
+}
+
+        /* Habits Page Specific Styles */
+.habits-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.month-navigator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-icon:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-strong);
+}
+
+.btn-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-primary);
+}
+
+.current-month {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  min-width: 180px;
+  text-align: center;
+}
+
+.filter-select {
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+/* Spreadsheet Container */
+.habits-spreadsheet-container {
+  overflow-x: auto;
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+}
+
+.spreadsheet-loading {
+  text-align: center;
+  padding: var(--space-16);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+.modal-card {
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-2xl);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: var(--border-1) solid var(--border-base);
+}
+
+.modal-header h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-top: var(--border-1) solid var(--border-base);
+}
+
+.modal-footer button {
+  flex: 1;
+}
+
+/* Form Fields */
+.form-field {
+  margin-bottom: var(--space-6);
+}
+
+.form-field label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.form-field input[type="text"],
+.form-field input[type="time"],
+.form-field input[type="number"],
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  padding: var(--space-3);
+  background: var(--bg-secondary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.color-picker-wrapper input[type="color"] {
+  width: 60px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.color-preview {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: var(--border-1) solid var(--border-base);
+}
+
+/* Frequency Options */
+.frequency-options {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-secondary);
+  border: var(--border-2) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.radio-option:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+}
+
+/* Duration Input */
+.duration-input {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.duration-input input {
+  flex: 1;
+}
+
+.duration-input select {
+  flex: 0.8;
+}
+
+/* Difficulty & Mood Buttons */
+.difficulty-scale,
+.mood-picker {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.difficulty-btn,
+.mood-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border: var(--border-2) solid var(--border-base);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.difficulty-btn:hover,
+.mood-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.difficulty-btn.selected,
+.mood-btn.selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.mood-btn {
+  font-size: var(--text-3xl);
+  min-width: auto;
+  aspect-ratio: 1;
+}
+    </style>
+</head>
+<body>
+    <!-- Habits Page - Spreadsheet View -->
+<div class="page-container">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>My Habits</h1>
+      <p id="habits-count">Loading...</p>
+    </div>
+    <button class="btn-primary" id="add-habit-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add New Habit
+    </button>
+  </div>
+  
+  <!-- Filters & Controls -->
+  <div class="habits-controls">
+    <div class="month-navigator">
+      <button class="btn-icon" id="prev-month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <span class="current-month" id="current-month">December 2024</span>
+      <button class="btn-icon" id="next-month">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="habits-filters">
+      <select class="filter-select" id="category-filter">
+        <option value="all">All Categories</option>
+        <option value="mental">Mental</option>
+        <option value="physical">Physical</option>
+        <option value="technical">Technical</option>
+        <option value="social">Social</option>
+        <option value="creative">Creative</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Habits Spreadsheet -->
+  <div class="habits-spreadsheet-container">
+    <div class="habits-spreadsheet" id="habits-spreadsheet">
+      
+      <!-- Loading State -->
+      <div class="spreadsheet-loading">
+        <div class="spinner"></div>
+        <p>Loading habits...</p>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Empty State (Hidden initially) -->
+  <div class="empty-state" id="empty-habits" style="display: none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M9 11l3 3 5-5"/>
+    </svg>
+    <h3>No habits yet</h3>
+    <p>Create your first habit to get started on your journey</p>
+    <button class="btn-primary" id="create-first-habit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Create Your First Habit
+    </button>
+  </div>
+  
+</div>
+
+<!-- Add Habit Modal -->
+<div class="modal-overlay" id="add-habit-modal" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Add New Habit</h2>
+      <button class="modal-close" id="close-add-habit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    
+    <form class="modal-body" id="add-habit-form">
+      
+      <!-- Habit Name -->
+      <div class="form-field">
+        <label for="habit-name">Habit Name</label>
+        <input 
+          type="text" 
+          id="habit-name" 
+          placeholder="e.g., Morning Workout"
+          required>
+      </div>
+      
+      <!-- Description -->
+      <div class="form-field">
+        <label for="habit-description">Description</label>
+        <textarea 
+          id="habit-description" 
+          rows="2"
+          placeholder="What does this habit involve?"></textarea>
+      </div>
+      
+      <!-- Color Picker -->
+      <div class="form-field">
+        <label for="habit-color">Color</label>
+        <div class="color-picker-wrapper">
+          <input 
+            type="color" 
+            id="habit-color" 
+            value="#22d3ee">
+          <div class="color-preview" id="color-preview"></div>
+          <button type="button" class="btn-sm" id="randomize-color">Randomize</button>
+        </div>
+      </div>
+      
+      <!-- Frequency -->
+      <div class="form-field">
+        <label>Frequency</label>
+        <div class="frequency-options">
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="daily" checked>
+            <span>Everyday</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="custom-days">
+            <span>Custom Days</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="frequency" value="per-week">
+            <span>X times per week</span>
+          </label>
+        </div>
+        
+        <!-- Custom Days Selection (Hidden by default) -->
+        <div class="custom-days" id="custom-days" style="display: none;">
+          <label class="day-checkbox"><input type="checkbox" value="1"> Mon</label>
+          <label class="day-checkbox"><input type="checkbox" value="2"> Tue</label>
+          <label class="day-checkbox"><input type="checkbox" value="3"> Wed</label>
+          <label class="day-checkbox"><input type="checkbox" value="4"> Thu</label>
+          <label class="day-checkbox"><input type="checkbox" value="5"> Fri</label>
+          <label class="day-checkbox"><input type="checkbox" value="6"> Sat</label>
+          <label class="day-checkbox"><input type="checkbox" value="0"> Sun</label>
+        </div>
+        
+        <!-- Per Week Input (Hidden by default) -->
+        <div class="per-week-input" id="per-week-input" style="display: none;">
+          <input type="number" min="1" max="7" value="3"> times per week
+        </div>
+      </div>
+      
+      <!-- Category -->
+      <div class="form-field">
+        <label for="habit-category">Category</label>
+        <select id="habit-category" required>
+          <option value="">Select category</option>
+          <option value="mental">Mental</option>
+          <option value="physical">Physical</option>
+          <option value="technical">Technical</option>
+          <option value="social">Social</option>
+          <option value="creative">Creative</option>
+        </select>
+      </div>
+      
+      <!-- Duration -->
+      <div class="form-field">
+        <label for="habit-duration">Duration</label>
+        <div class="duration-input">
+          <input type="number" id="habit-duration" min="1" placeholder="30">
+          <select id="duration-unit">
+            <option value="minutes">minutes</option>
+            <option value="hours">hours</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Expected Time -->
+      <div class="form-field">
+        <label for="habit-time">Expected Time of Day</label>
+        <input type="time" id="habit-time">
+      </div>
+      
+      <!-- Public Toggle -->
+      <div class="form-field">
+        <label class="toggle-label">
+          <input type="checkbox" id="habit-public">
+          <span class="toggle-switch"></span>
+          <span>Make this habit public</span>
+        </label>
+      </div>
+      
+    </form>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="cancel-add-habit">Cancel</button>
+      <button type="submit" class="btn-primary" id="save-habit">Create Habit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Check-in Modal (When clicking checkbox) -->
+<div class="modal-overlay" id="checkin-modal" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="checkin-habit-name">Log Habit</h2>
+      <button class="modal-close" id="close-checkin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      
+      <!-- Difficulty -->
+      <div class="form-field">
+        <label>How difficult was it?</label>
+        <div class="difficulty-scale">
+          <button type="button" class="difficulty-btn" data-value="1">😊 Easy</button>
+          <button type="button" class="difficulty-btn" data-value="2">😐 Medium</button>
+          <button type="button" class="difficulty-btn" data-value="3">😓 Hard</button>
+        </div>
+      </div>
+      
+      <!-- Mood -->
+      <div class="form-field">
+        <label>How do you feel?</label>
+        <div class="mood-picker">
+          <button type="button" class="mood-btn" data-mood="terrible">😢</button>
+          <button type="button" class="mood-btn" data-mood="bad">😞</button>
+          <button type="button" class="mood-btn" data-mood="okay">😐</button>
+          <button type="button" class="mood-btn" data-mood="good">🙂</button>
+          <button type="button" class="mood-btn" data-mood="great">😊</button>
+        </div>
+      </div>
+      
+      <!-- Notes -->
+      <div class="form-field">
+        <label for="checkin-notes">Notes (optional)</label>
+        <textarea id="checkin-notes" rows="3" placeholder="Any thoughts?"></textarea>
+      </div>
+      
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="cancel-checkin">Cancel</button>
+      <button type="button" class="btn-primary" id="save-checkin">Save Check-in</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // habits.js - Complete JavaScript for Habits Page
+
+// ============================================================================
+// STORAGE & DATA MANAGEMENT
+// ============================================================================
+
+const STORAGE_KEYS = {
+  HABITS: 'axiom_habits',
+  CHECKINS: 'axiom_checkins'
+};
+
+// Utility function to generate unique IDs
+function generateId() {
+  return `habit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
+// Get all habits from storage
+function getHabits() {
+  const stored = localStorage.getItem(STORAGE_KEYS.HABITS);
+  return stored ? JSON.parse(stored) : [];
+}
+
+// Save habits to storage
+function saveHabits(habits) {
+  localStorage.setItem(STORAGE_KEYS.HABITS, JSON.stringify(habits));
+}
+
+// Get all check-ins from storage
+function getCheckins() {
+  const stored = localStorage.getItem(STORAGE_KEYS.CHECKINS);
+  return stored ? JSON.parse(stored) : [];
+}
+
+// Save check-ins to storage
+function saveCheckins(checkins) {
+  localStorage.setItem(STORAGE_KEYS.CHECKINS, JSON.stringify(checkins));
+}
+
+// Get check-in for specific habit and date
+function getCheckin(habitId, date) {
+  const checkins = getCheckins();
+  return checkins.find(c => c.habitId === habitId && c.date === date);
+}
+
+// Save a check-in
+function saveCheckin(checkinData) {
+  const checkins = getCheckins();
+  const existingIndex = checkins.findIndex(
+    c => c.habitId === checkinData.habitId && c.date === checkinData.date
+  );
+  
+  if (existingIndex >= 0) {
+    checkins[existingIndex] = checkinData;
+  } else {
+    checkins.push(checkinData);
+  }
+  
+  saveCheckins(checkins);
+}
+
+// ============================================================================
+// DATE UTILITIES
+// ============================================================================
+
+let currentViewDate = new Date();
+
+function formatDate(date) {
+  return date.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+function getMonthData(year, month) {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  
+  const days = [];
+  for (let i = 1; i <= daysInMonth; i++) {
+    const date = new Date(year, month, i);
+    days.push({
+      date: formatDate(date),
+      day: date.getDate(),
+      dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
+      isToday: formatDate(date) === formatDate(new Date()),
+      isPast: date < new Date(new Date().setHours(0, 0, 0, 0)),
+      isFuture: date > new Date(new Date().setHours(23, 59, 59, 999))
+    });
+  }
+  
+  return days;
+}
+
+function getMonthName(date) {
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+// Check if habit should be tracked on a specific day
+function shouldTrackOnDay(habit, dateStr) {
+  const date = new Date(dateStr);
+  const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  
+  // Check if date is within habit's active period
+  if (habit.startDate && dateStr < habit.startDate) return false;
+  if (habit.endDate && dateStr > habit.endDate) return false;
+  
+  if (habit.frequency === 'daily') {
+    return true;
+  } else if (habit.frequency === 'custom-days') {
+    return habit.customDays && habit.customDays.includes(dayOfWeek.toString());
+  } else if (habit.frequency === 'per-week') {
+    // For per-week, we track all days but show completion based on target
+    return true;
+  }
+  
+  return true;
+}
+
+// ============================================================================
+// COLOR UTILITIES
+// ============================================================================
+
+function generateRandomColor() {
+  const colors = [
+    '#22d3ee', '#a855f7', '#ec4899', '#f97316', 
+    '#eab308', '#84cc16', '#10b981', '#06b6d4',
+    '#6366f1', '#8b5cf6', '#d946ef', '#f43f5e'
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function getContrastColor(hexColor) {
+  // Convert hex to RGB
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  return luminance > 0.5 ? '#000000' : '#ffffff';
+}
+
+// ============================================================================
+// SPREADSHEET RENDERING
+// ============================================================================
+
+function renderSpreadsheet() {
+  const container = document.getElementById('habits-spreadsheet');
+  const habits = getHabits();
+  const emptyState = document.getElementById('empty-habits');
+  
+  // Apply category filter
+  const categoryFilter = document.getElementById('category-filter').value;
+  const filteredHabits = categoryFilter === 'all' 
+    ? habits 
+    : habits.filter(h => h.category === categoryFilter);
+  
+  // Update habits count
+  document.getElementById('habits-count').textContent = 
+    `${filteredHabits.length} habit${filteredHabits.length !== 1 ? 's' : ''}`;
+  
+  if (filteredHabits.length === 0) {
+    container.innerHTML = '';
+    container.style.display = 'none';
+    emptyState.style.display = 'flex';
+    return;
+  }
+  
+  container.style.display = 'block';
+  emptyState.style.display = 'none';
+  
+  const year = currentViewDate.getFullYear();
+  const month = currentViewDate.getMonth();
+  const days = getMonthData(year, month);
+  
+  // Build spreadsheet HTML
+  let html = '<table class="habit-table"><thead><tr>';
+  
+  // Header: Habit name column
+  html += '<th class="habit-name-header sticky-col">Habit</th>';
+  
+  // Header: Date columns
+  days.forEach(day => {
+    const todayClass = day.isToday ? 'today-column' : '';
+    html += `
+      <th class="date-header ${todayClass}">
+        <div class="date-header-content">
+          <div class="date-day">${day.day}</div>
+          <div class="date-name">${day.dayName}</div>
+        </div>
+      </th>
+    `;
+  });
+  
+  html += '</tr></thead><tbody>';
+  
+  // Rows: Each habit
+  filteredHabits.forEach(habit => {
+    const textColor = getContrastColor(habit.color);
+    html += `
+      <tr class="habit-row" data-habit-id="${habit.id}">
+        <td class="habit-name-cell sticky-col" style="background-color: ${habit.color}; color: ${textColor};">
+          <div class="habit-name-wrapper" title="${habit.description || habit.name}">
+            <span class="habit-name">${habit.name}</span>
+          </div>
+        </td>
+    `;
+    
+    // Checkbox columns
+    days.forEach(day => {
+      const shouldTrack = shouldTrackOnDay(habit, day.date);
+      const checkin = getCheckin(habit.id, day.date);
+      const todayClass = day.isToday ? 'today-column' : '';
+      
+      if (!shouldTrack) {
+        html += `<td class="checkbox-cell ${todayClass} disabled-day"></td>`;
+      } else if (day.isFuture) {
+        html += `<td class="checkbox-cell ${todayClass} future-day"></td>`;
+      } else {
+        const isChecked = checkin && checkin.completed;
+        const isMissed = !checkin && day.isPast && !day.isToday;
+        
+        let cellContent = '';
+        if (isChecked) {
+          cellContent = `
+            <div class="checkbox-wrapper checked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+          `;
+        } else if (isMissed) {
+          cellContent = `
+            <div class="checkbox-wrapper missed">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+          `;
+        } else {
+          cellContent = `
+            <div class="checkbox-wrapper unchecked" data-habit-id="${habit.id}" data-date="${day.date}">
+              <div class="checkbox-inner"></div>
+            </div>
+          `;
+        }
+        
+        html += `<td class="checkbox-cell ${todayClass}">${cellContent}</td>`;
+      }
+    });
+    
+    html += '</tr>';
+  });
+  
+  html += '</tbody></table>';
+  
+  container.innerHTML = html;
+  
+  // Add click listeners to checkboxes
+  document.querySelectorAll('.checkbox-wrapper.unchecked').forEach(checkbox => {
+    checkbox.addEventListener('click', handleCheckboxClick);
+  });
+  
+  // Add click listeners to habit names
+  document.querySelectorAll('.habit-name-wrapper').forEach(nameCell => {
+    nameCell.style.cursor = 'pointer';
+    nameCell.addEventListener('click', (e) => {
+      const habitId = e.target.closest('.habit-row').dataset.habitId;
+      // Navigate to habit details page (implement later)
+      console.log('Navigate to habit details:', habitId);
+    });
+  });
+}
+
+// ============================================================================
+// MODAL MANAGEMENT
+// ============================================================================
+
+let currentCheckboxData = null;
+
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ============================================================================
+// ADD HABIT FUNCTIONALITY
+// ============================================================================
+
+function openAddHabitModal() {
+  // Reset form
+  document.getElementById('add-habit-form').reset();
+  
+  // Set random color
+  const randomColor = generateRandomColor();
+  document.getElementById('habit-color').value = randomColor;
+  updateColorPreview(randomColor);
+  updateModalTheme(randomColor);
+  
+  openModal('add-habit-modal');
+}
+
+function updateColorPreview(color) {
+  const preview = document.getElementById('color-preview');
+  if (preview) {
+    preview.style.backgroundColor = color;
+  }
+}
+
+function updateModalTheme(color) {
+  const modal = document.getElementById('add-habit-modal');
+  if (modal) {
+    modal.querySelector('.modal-card').style.borderColor = color + '40';
+    const buttons = modal.querySelectorAll('.btn-primary');
+    buttons.forEach(btn => {
+      btn.style.backgroundColor = color;
+      btn.style.borderColor = color;
+    });
+  }
+}
+
+function saveNewHabit() {
+  const form = document.getElementById('add-habit-form');
+  
+  // Validate required fields
+  const name = document.getElementById('habit-name').value.trim();
+  const category = document.getElementById('habit-category').value;
+  const color = document.getElementById('habit-color').value;
+  
+  if (!name) {
+    alert('Please enter a habit name');
+    return;
+  }
+  
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
+  
+  // Get frequency
+  const frequency = document.querySelector('input[name="frequency"]:checked').value;
+  let customDays = null;
+  let perWeekCount = null;
+  
+  if (frequency === 'custom-days') {
+    customDays = Array.from(document.querySelectorAll('#custom-days input:checked'))
+      .map(cb => cb.value);
+    if (customDays.length === 0) {
+      alert('Please select at least one day');
+      return;
+    }
+  } else if (frequency === 'per-week') {
+    perWeekCount = parseInt(document.querySelector('#per-week-input input').value);
+  }
+  
+  // Create habit object
+  const habit = {
+    id: generateId(),
+    name: name,
+    description: document.getElementById('habit-description').value.trim(),
+    color: color,
+    category: category,
+    frequency: frequency,
+    customDays: customDays,
+    perWeekCount: perWeekCount,
+    duration: document.getElementById('habit-duration').value,
+    durationUnit: document.getElementById('duration-unit').value,
+    expectedTime: document.getElementById('habit-time').value,
+    isPublic: document.getElementById('habit-public').checked,
+    createdAt: new Date().toISOString()
+  };
+  
+  // Save to storage
+  const habits = getHabits();
+  habits.push(habit);
+  saveHabits(habits);
+  
+  // Close modal and refresh
+  closeModal('add-habit-modal');
+  renderSpreadsheet();
+}
+
+// ============================================================================
+// CHECK-IN FUNCTIONALITY
+// ============================================================================
+
+function handleCheckboxClick(e) {
+  const checkbox = e.currentTarget;
+  const habitId = checkbox.dataset.habitId;
+  const date = checkbox.dataset.date;
+  
+  currentCheckboxData = { habitId, date };
+  
+  const habit = getHabits().find(h => h.id === habitId);
+  if (!habit) return;
+  
+  // Set modal title and theme
+  document.getElementById('checkin-habit-name').textContent = habit.name;
+  document.getElementById('checkin-habit-name').style.color = habit.color;
+  
+  // Reset form
+  document.getElementById('checkin-notes').value = '';
+  document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+  
+  openModal('checkin-modal');
+}
+
+function saveCheckIn() {
+  if (!currentCheckboxData) return;
+  
+  const difficulty = document.querySelector('.difficulty-btn.selected')?.dataset.value;
+  const mood = document.querySelector('.mood-btn.selected')?.dataset.mood;
+  const notes = document.getElementById('checkin-notes').value.trim();
+  
+  if (!difficulty) {
+    alert('Please select difficulty level');
+    return;
+  }
+  
+  if (!mood) {
+    alert('Please select your mood');
+    return;
+  }
+  
+  const checkin = {
+    habitId: currentCheckboxData.habitId,
+    date: currentCheckboxData.date,
+    completed: true,
+    difficulty: parseInt(difficulty),
+    mood: mood,
+    notes: notes,
+    timestamp: new Date().toISOString()
+  };
+  
+  saveCheckin(checkin);
+  closeModal('checkin-modal');
+  renderSpreadsheet();
+  
+  currentCheckboxData = null;
+}
+
+// ============================================================================
+// MONTH NAVIGATION
+// ============================================================================
+
+function navigateMonth(direction) {
+  currentViewDate.setMonth(currentViewDate.getMonth() + direction);
+  document.getElementById('current-month').textContent = getMonthName(currentViewDate);
+  renderSpreadsheet();
+}
+
+// ============================================================================
+// EVENT LISTENERS
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  // Initial render
+  document.getElementById('current-month').textContent = getMonthName(currentViewDate);
+  renderSpreadsheet();
+  
+  // Add Habit Modal
+  document.getElementById('add-habit-btn').addEventListener('click', openAddHabitModal);
+  document.getElementById('create-first-habit').addEventListener('click', openAddHabitModal);
+  document.getElementById('close-add-habit').addEventListener('click', () => closeModal('add-habit-modal'));
+  document.getElementById('cancel-add-habit').addEventListener('click', () => closeModal('add-habit-modal'));
+  document.getElementById('save-habit').addEventListener('click', saveNewHabit);
+  
+  // Color picker
+  document.getElementById('habit-color').addEventListener('input', (e) => {
+    updateColorPreview(e.target.value);
+    updateModalTheme(e.target.value);
+  });
+  
+  document.getElementById('randomize-color').addEventListener('click', () => {
+    const color = generateRandomColor();
+    document.getElementById('habit-color').value = color;
+    updateColorPreview(color);
+    updateModalTheme(color);
+  });
+  
+  // Frequency options
+  document.querySelectorAll('input[name="frequency"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      document.getElementById('custom-days').style.display = 
+        e.target.value === 'custom-days' ? 'flex' : 'none';
+      document.getElementById('per-week-input').style.display = 
+        e.target.value === 'per-week' ? 'flex' : 'none';
+    });
+  });
+  
+  // Check-in Modal
+  document.getElementById('close-checkin').addEventListener('click', () => closeModal('checkin-modal'));
+  document.getElementById('cancel-checkin').addEventListener('click', () => closeModal('checkin-modal'));
+  document.getElementById('save-checkin').addEventListener('click', saveCheckIn);
+  
+  // Difficulty buttons
+  document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+      e.currentTarget.classList.add('selected');
+    });
+  });
+  
+  // Mood buttons
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      e.currentTarget.classList.add('selected');
+    });
+  });
+  
+  // Month navigation
+  document.getElementById('prev-month').addEventListener('click', () => navigateMonth(-1));
+  document.getElementById('next-month').addEventListener('click', () => navigateMonth(1));
+  
+  // Category filter
+  document.getElementById('category-filter').addEventListener('change', renderSpreadsheet);
+  
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeModal(overlay.id);
+      }
+    });
+  });
+  
+});
+
+// ============================================================================
+// STYLES FOR SPREADSHEET (Add to existing styles)
+// ============================================================================
+
+const additionalStyles = `
+<style>
+.habit-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.habit-table th,
+.habit-table td {
+  padding: var(--space-3);
+  text-align: center;
+  border-bottom: var(--border-1) solid var(--border-base);
+}
+
+.habit-name-header {
+  text-align: left;
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  min-width: 180px;
+  max-width: 180px;
+  position: sticky;
+  left: 0;
+  background: var(--bg-primary);
+  z-index: 10;
+}
+
+.date-header {
+  min-width: 50px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.date-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date-day {
+  font-weight: var(--weight-bold);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+}
+
+.date-name {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.today-column {
+  background: var(--primary-glow) !important;
+  border-left: 2px solid var(--primary);
+  border-right: 2px solid var(--primary);
+}
+
+.habit-row:hover {
+  background: var(--bg-secondary);
+}
+
+.habit-name-cell {
+  text-align: left;
+  font-weight: var(--weight-medium);
+  padding: var(--space-4);
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  border-radius: var(--radius-lg);
+}
+
+.habit-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.habit-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.checkbox-cell {
+  position: relative;
+  min-width: 50px;
+}
+
+.checkbox-wrapper {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.checkbox-wrapper.unchecked {
+  border: 2px solid var(--border-base);
+  background: var(--bg-secondary);
+}
+
+.checkbox-wrapper.unchecked:hover {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+  transform: scale(1.1);
+}
+
+.checkbox-wrapper.checked {
+  background: #10b981;
+  border: 2px solid #059669;
+}
+
+.checkbox-wrapper.checked svg {
+  width: 20px;
+  height: 20px;
+  stroke: white;
+}
+
+.checkbox-wrapper.missed {
+  background: #ef4444;
+  border: 2px solid #dc2626;
+}
+
+.checkbox-wrapper.missed svg {
+  width: 16px;
+  height: 16px;
+  stroke: white;
+}
+
+.disabled-day,
+.future-day {
+  background: var(--bg-tertiary);
+  opacity: 0.3;
+}
+
+.checkbox-inner {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--bg-primary);
+}
+
+.custom-days {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+
+.day-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-secondary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+
+.day-checkbox:has(input:checked) {
+  background: var(--primary-glow);
+  border-color: var(--primary);
+}
+
+.per-week-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.per-week-input input {
+  width: 80px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.toggle-switch {
+  width: 48px;
+  height: 24px;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  position: relative;
+  transition: background var(--duration-200) var(--ease-out);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--duration-200) var(--ease-out);
+}
+
+.toggle-label input:checked + .toggle-switch {
+  background: var(--primary);
+}
+
+.toggle-label input:checked + .toggle-switch::after {
+  transform: translateX(24px);
+}
+
+.toggle-label input {
+  display: none;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-base);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--space-4);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+`;
+
+// Inject additional styles
+const styleSheet = document.createElement('style');
+styleSheet.textContent = additionalStyles;
+document.head.appendChild(styleSheet);
+</script>
+<script src="js/theme.js"></script>
+</body>
+</html>

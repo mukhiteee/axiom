@@ -1,0 +1,86 @@
+<div class="analytics-container">
+    <div class="header">
+        <h1>📊 Neural Insights</h1>
+        <p>Advanced correlation of your habits and environment</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Habits</h3>
+            <div id="stat-total-habits" class="stat-value">0</div>
+            <div class="stat-label">Active tracks</div>
+        </div>
+        <div class="stat-card">
+            <h3>Avg Completion</h3>
+            <div id="stat-avg-completion" class="stat-value">0%</div>
+            <div class="stat-label">Current month</div>
+        </div>
+        <div class="stat-card">
+            <h3>Global Streak</h3>
+            <div id="stat-global-streak" class="stat-value">0 <span class="trend up">🔥</span></div>
+            <div class="stat-label">Unbroken chain</div>
+        </div>
+        <div class="stat-card">
+            <h3>Power Habit</h3>
+            <div id="stat-best-habit" class="stat-value">--</div>
+            <div id="stat-best-habit-name" class="stat-label">Calculating...</div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h2>30-Day Completion Trend</h2>
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h2>Mood vs Productivity</h2>
+            <div class="chart-container">
+                <canvas id="moodChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="habits-list">
+        <h2>Performance Breakdown</h2>
+        <div id="habitsListDynamic"></div>
+    </div>
+
+    <div class="chart-card">
+        <h2>Yearly Activity Heatmap</h2>
+        <div class="heatmap-wrapper">
+            <div class="heatmap" id="heatmapDynamic"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const initAnalytics = async () => {
+        console.log("Analytics View Handshake Received");
+        
+        // Load data if it's missing (similar to your renderSpreadsheet logic)
+        if (typeof habitsCache === 'undefined' || habitsCache.length === 0) {
+            const hResponse = await fetchAPI('list');
+            const cResponse = await fetchAPI('checkins');
+            window.habitsCache = hResponse.data || [];
+            window.checkinsCache = cResponse.data || [];
+        }
+
+        // Now call the analytics engine
+        if (typeof Analytics !== 'undefined') {
+            Analytics.init();
+        }
+    };
+
+    // Listen for the specific router handshake
+    document.addEventListener('view-loaded', (e) => {
+        if (e.detail.view === 'analytics') {
+            initAnalytics();
+        }
+    }, { once: true }); // Use once to prevent multiple listeners if view is reloaded
+})();
+
+
+</script>

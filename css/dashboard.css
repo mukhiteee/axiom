@@ -1,0 +1,791 @@
+/* ═══════════════════════════════════════════════════════════
+   AXIOM // DASHBOARD
+   Main application layout - All colors from variables.css
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('variables.css');
+@import url('themes.css');
+
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  overflow: hidden;
+  height: 100vh;
+  transition: background-color var(--duration-300) var(--ease-out),
+              color var(--duration-300) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR (MINIMALIST DESIGN)
+   ═══════════════════════════════════════════════════════════ */
+
+.sidebar {
+  background: var(--bg-primary);
+  border-right: var(--border-1) solid var(--border-base);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: var(--z-sticky);
+}
+
+/* ═══ SIDEBAR HEADER ═══ */
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-8) 0 var(--space-6);
+}
+
+.sidebar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: var(--text-inverse);
+  stroke-width: 2.5;
+}
+
+/* ═══ NAVIGATION MENU ═══ */
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 0;
+}
+
+.nav-item {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: all var(--duration-200) var(--ease-out);
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+}
+
+.nav-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--glow-primary);
+}
+
+.nav-item.active .nav-icon {
+  stroke: var(--text-inverse);
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  flex-shrink: 0;
+  stroke-width: 2;
+}
+
+.nav-label {
+  display: none;
+}
+
+.nav-divider {
+  width: 40px;
+  height: var(--border-1);
+  background: var(--border-base);
+  margin: var(--space-3) 0;
+}
+
+/* ═══ SIDEBAR FOOTER ═══ */
+
+.sidebar-footer {
+  padding: var(--space-6) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  border-top: var(--border-1) solid var(--border-base);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--text-inverse);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: var(--glow-primary);
+}
+
+.user-details {
+  display: none;
+}
+
+.logout-btn {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+  color: var(--text-tertiary);
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  transform: scale(1.05);
+}
+
+.logout-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  transition: stroke var(--duration-200) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+   ═══════════════════════════════════════════════════════════ */
+
+.main-content {
+  background: var(--bg-base);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: var(--radius-base);
+}
+
+/* ═══ LOADING & ERROR STATES ═══ */
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  color: var(--text-tertiary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-base);
+  border-top-color: var(--primary);
+  border-radius: var(--radius-full);
+  animation: spin 0.8s linear infinite;
+  margin-bottom: var(--space-4);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  text-align: center;
+  min-height: 400px;
+}
+
+.error-state svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--error);
+  margin-bottom: var(--space-6);
+}
+
+.error-state h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.error-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+/* ═══ PAGE CONTAINER ═══ */
+
+.page-container {
+  padding: var(--space-8);
+  animation: fadeIn var(--duration-300) var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.page-header h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.page-header p {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+/* ═══ TOP BAR (OVERVIEW) ═══ */
+
+.top-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.greeting h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.greeting p {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+.top-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ═══ BUTTONS ═══ */
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-primary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-strong);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: var(--opacity-50);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: var(--space-3) var(--space-6);
+  background: transparent;
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-primary);
+  border-color: var(--border-strong);
+}
+
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-out);
+}
+
+.btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-primary);
+}
+
+/* ═══ EMPTY STATES ═══ */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: var(--bg-primary);
+  border: var(--border-1) solid var(--border-base);
+  border-radius: var(--radius-2xl);
+  margin: var(--space-8) auto;
+  max-width: 500px;
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--text-tertiary);
+  opacity: var(--opacity-30);
+  margin-bottom: var(--space-6);
+}
+
+.empty-state h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.empty-state-mini {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--text-tertiary);
+}
+
+.empty-state-mini p {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.content-placeholder {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: var(--bg-primary);
+  border: 2px dashed var(--border-base);
+  border-radius: var(--radius-2xl);
+  margin: var(--space-8) 0;
+}
+
+.content-placeholder h2 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+}
+
+.content-placeholder p {
+  color: var(--text-tertiary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    width: 260px;
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    padding: var(--space-4);
+  }
+  
+  .page-header,
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 2. SPREADSHEET GRID (The "Axiom" No-Scroll Edition) */
+.habits-spreadsheet-container {
+    width: 100%;
+    overflow-x: hidden; /* Lock horizontal scrolling for that "Single Page" feel */
+    background: var(--bg-primary);
+    border: var(--border-1) solid var(--border-base);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-2);
+    scrollbar-width: thin;
+}
+
+.habits-spreadsheet table {
+    width: 100%; /* Force table to fill the container exactly */
+    border-collapse: collapse;
+    table-layout: fixed; /* Essential: Forces columns to respect the widths below */
+}
+
+/* Sidebar: 20% of viewport width. Scalable and sticky. */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    width: 20%; 
+    background: var(--bg-primary) !important;
+    border-right: 2px solid var(--border-strong) !important;
+    text-align: left !important;
+    padding: 0 var(--space-3) !important;
+    font-weight: 600;
+    font-size: clamp(10px, 0.8vw, 14px); /* Scales font with screen size */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Day Columns: Remaining 80% divided by 31 days */
+.habits-spreadsheet th:not(.sticky-col), 
+.habits-spreadsheet td:not(.sticky-col) {
+    width: calc(80% / 31); 
+    height: clamp(30px, 4vh, 40px); /* Height scales with vertical space */
+    padding: 0;
+    text-align: center;
+    border: 1px solid var(--border-base);
+    font-size: clamp(8px, 0.6vw, 11px); /* Dates scale down on small screens */
+    position: relative;
+}
+
+/* The Habit Box (Checkbox style) - Scalable */
+.habit-checkbox {
+    /* Scale based on Viewport Width so they never overlap */
+    width: 1.6vw; 
+    height: 1.6vw;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 26px;
+    max-height: 26px;
+    margin: auto;
+    border-radius: 20%;
+    border: 1.5px solid var(--border-base);
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-200);
+}
+
+.habit-checkbox.checked {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.habit-checkbox.has-note::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    right: 15%;
+    width: 4px;
+    height: 4px;
+    background: #fbbf24;
+    border-radius: 50%;
+}
+
+/* Today Highlighter */
+.today-highlight {
+    background: var(--primary-glow-subtle) !important;
+    color: var(--primary);
+    font-weight: bold;
+    outline: 1px inset var(--primary); /* Makes the current day pop in a tight grid */
+}
+
+/* 3. MODAL & FORM STYLES (No changes needed, kept for consistency) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-overlay);
+    backdrop-filter: var(--backdrop-blur);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--space-4);
+}
+
+.modal-card {
+    background: var(--bg-primary);
+    border: var(--border-1) solid var(--border-base);
+    border-radius: var(--radius-2xl);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-2xl);
+}
+
+/* 4. MOBILE ADAPTIVE DESIGN (Axiom Mobile) */
+@media (max-width: 768px) {
+    /* Allow horizontal scroll on mobile so the grid remains usable */
+    .habits-spreadsheet-container {
+        overflow-x: auto;
+        padding: var(--space-2);
+        max-height: none; /* Let the page scroll naturally */
+    }
+
+    .habits-spreadsheet table {
+        width: max-content; /* Stop trying to fit everything on one screen */
+        table-layout: auto;
+    }
+
+    /* Make the sticky column narrower but readable */
+    .sticky-col {
+        min-width: 120px;
+        width: 120px;
+        font-size: 12px;
+        padding: 0 var(--space-2) !important;
+    }
+
+    /* Make cells BIGGER for thumbs */
+    .habits-spreadsheet th:not(.sticky-col), 
+    .habits-spreadsheet td:not(.sticky-col) {
+        width: 44px; /* Big enough to tap easily */
+        height: 44px;
+        font-size: 12px;
+    }
+
+    .habit-checkbox {
+        width: 32px; 
+        height: 32px;
+        border-radius: 8px;
+    }
+
+    /* Hide the less important data on mobile to save vertical space */
+    .mobile-hide {
+        display: none;
+    }
+
+    /* Add a "Swipe" indicator hint */
+    .habits-spreadsheet-container::after {
+        content: '← Swipe for dates →';
+        display: block;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-secondary);
+        padding: var(--space-2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+}
+
+.field-help-text {
+    font-size: 0.75rem;
+    color: #94a3b8; /* Slate 400 */
+    margin-top: 6px;
+    font-style: italic;
+    min-height: 1.2em;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Ensure date inputs look like your text inputs */
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-family: inherit;
+}
+
+/* Ensure the table cell doesn't clip the card */
+.sticky-col {
+    overflow: visible !important;
+    position: sticky;
+    left: 0;
+    background: var(--surface-color, #fff);
+    z-index: 10;
+}
+
+/* Base Wrapper */
+.habit-info-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+/* Premium Card - Hidden by default */
+.habit-card-popover {
+    display: none; 
+    position: absolute;
+    left: calc(100% + 15px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 260px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    z-index: 1000;
+    overflow: hidden;
+    pointer-events: none;
+    animation: habitPop 0.2s ease-out;
+}
+
+/* Show on Hover */
+.habit-info-wrapper:hover .habit-card-popover {
+    display: flex;
+}
+
+@keyframes habitPop {
+    from { opacity: 0; transform: translateY(-50%) translateX(-10px); }
+    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+.card-accent { width: 6px; flex-shrink: 0; }
+.card-content { padding: 15px; flex-grow: 1; text-align: left; }
+.card-meta { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; }
+.card-title { margin: 4px 0 10px; font-size: 15px; color: #1e293b; }
+.card-body label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 2px; }
+.card-body p { margin: 0; font-size: 13px; color: #334155; line-height: 1.4; }
+.card-body p.empty-state { font-style: italic; color: #cbd5e1; }
+
+.analytics-container { padding: 20px; color: var(--card-text); }
+.stat-card, .chart-card, .habits-list { 
+    background: var(--card-bg); 
+    border: 1px solid var(--card-border); 
+    border-radius: 12px; 
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.stat-value { color: var(--card-text); font-size: 2rem; font-weight: bold; }
+.progress-bar { background: var(--card-border); border-radius: 10px; height: 8px; width: 120px; }
+.heatmap { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; }
+.heatmap-day { width: 100%; aspect-ratio: 1; border-radius: 4px; }
