@@ -185,3 +185,35 @@
     color: var(--text-primary);
     padding: var(--space-4);
 }
+
+.diagnostic-header-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+    grid-column: span 2;
+}
+
+.main-diagnostic-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.5rem;
+    grid-column: span 2;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+    margin-top: 1rem;
+}
+
+.heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.05);
+}
+
+.chart-container canvas {
+    max-height: 300px;
+}

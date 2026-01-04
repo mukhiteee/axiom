@@ -1,47 +1,49 @@
-<div class="analytics-wrapper">
-    <header class="analytics-header">
-        <div class="header-main">
-            <h1>Analytics</h1>
-            <div class="controls">
-                <select id="periodFilter" class="glass-select">
-                    <option value="30">This Month</option>
-                    <option value="90">Last 90 Days</option>
-                    <option value="365">Yearly</option>
-                </select>
-                
-                <select id="habitFilter" class="glass-select">
-                    <option value="all">All Habits</option>
-                </select>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="analytics-wrapper">
+        <header class="analytics-header">
+            <div class="header-main">
+                <h1>Analytics</h1>
+                <div class="controls">
+                    <select id="periodFilter" class="glass-select">
+                        <option value="30">This Month</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="365">Yearly</option>
+                    </select>
+                    
+                    <select id="habitFilter" class="glass-select">
+                        <option value="all">All Habits</option>
+                    </select>
+                </div>
             </div>
+
+            <nav class="tab-row">
+                <button class="tab-btn active" data-tab="overview">Overview</button>
+                <button class="tab-btn" data-tab="radar">Radar</button>
+                <button class="tab-btn" data-tab="trends">Trends</button>
+                <button class="tab-btn" data-tab="insights">Insights</button>
+                <button class="tab-btn" data-tab="wrapped">Wrapped</button>
+                <button class="tab-btn" data-tab="compare">Compare</button>
+            </nav>
+        </header>
+
+        <div class="analytics-body">
+            <main id="tab-content" class="fade-in">
+                </main>
+
+            <aside class="analytics-sidebar">
+                <div class="stat-card">
+                    <span class="label">Total Logs</span>
+                    <div class="value" id="side-total-logs">0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Avg Intensity</span>
+                    <div class="value" id="side-avg-intensity">0.0</div>
+                </div>
+                <div class="stat-card rank-card">
+                    <span class="label">Global Rank</span>
+                    <div class="value">#847<small>/10k</small></div>
+                </div>
+            </aside>
         </div>
-
-        <nav class="tab-row">
-            <button class="tab-btn active" data-tab="overview">Overview</button>
-            <button class="tab-btn" data-tab="radar">Radar</button>
-            <button class="tab-btn" data-tab="trends">Trends</button>
-            <button class="tab-btn" data-tab="insights">Insights</button>
-            <button class="tab-btn" data-tab="wrapped">Wrapped</button>
-            <button class="tab-btn" data-tab="compare">Compare</button>
-        </nav>
-    </header>
-
-    <div class="analytics-body">
-        <main id="tab-content" class="fade-in">
-            </main>
-
-        <aside class="analytics-sidebar">
-            <div class="stat-card">
-                <span class="label">Total Logs</span>
-                <div class="value" id="side-total-logs">0</div>
-            </div>
-            <div class="stat-card">
-                <span class="label">Avg Intensity</span>
-                <div class="value" id="side-avg-intensity">0.0</div>
-            </div>
-            <div class="stat-card rank-card">
-                <span class="label">Global Rank</span>
-                <div class="value">#847<small>/10k</small></div>
-            </div>
-        </aside>
     </div>
-</div>
