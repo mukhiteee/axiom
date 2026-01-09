@@ -42,7 +42,7 @@ const AxiomAnalytics = {
         this.state.categories = uniqueCats.map((cat, index) => ({
             name: cat,
             color: this.state.theme.colors[index % this.state.theme.colors.length],
-            id: cat.toLowerCase().replace(/\s+/g, '_')
+            id: cat .toLowerCase().replace(/\s+/g, '_')
         }));
     },
 

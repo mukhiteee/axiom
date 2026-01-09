@@ -97,6 +97,7 @@ function injectThemeAwareStyles() {
 }
     `;
     document.head.appendChild(style);
+    addChartStyles();
 }
 
 async function initHabitsView() {
@@ -220,6 +221,7 @@ async function renderSpreadsheet(hResponse = null) {
     html += `</tbody></table>`;
     container.innerHTML = html;
     scrollToToday();
+    renderChartSection();
 }
 
 function setupFormToggles() {
@@ -438,3 +440,550 @@ function scrollToToday() {
         container.scrollTo({ left: offset, behavior: 'smooth' });
     }
 }
+
+/**
+ * PERFORMANCE CHART ADD-ON - ALIGNED VERSION
+ * Add this code to the END of your existing habits.js file
+ * 
+ * FEATURES:
+ * - Left stats panel (matches habit names column width)
+ * - Chart aligns perfectly with spreadsheet day columns
+ * - Hover tooltip shows day stats
+ * - Green by default, RED only on dips
+ */
+
+/**
+ * Add chart styles to existing styles
+ */
+function addChartStyles() {
+    const existingStyle = document.getElementById('axiom-card-styles');
+    if (!existingStyle) return;
+    
+    const chartCSS = `
+        /* Performance Chart Container */
+        .performance-chart-wrapper {
+            background: var(--bg-primary);
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+            display: flex;
+            gap: 0;
+        }
+        
+        /* Left Stats Panel - matches habit column width */
+        .chart-stats-panel {
+            width: 210px;
+            padding: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--space-3);
+            border-right: var(--border-1) solid var(--border-base);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        
+        .stat-subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        /* Chart Canvas Container */
+        .chart-canvas-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #performance-canvas {
+            width: 100%;
+            height: 180px;
+            display: block;
+            cursor: crosshair;
+        }
+        
+        /* Tooltip */
+        .chart-tooltip {
+            position: fixed;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--card-text);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            white-space: nowrap;
+        }
+        
+        .chart-tooltip.visible {
+            opacity: 1;
+        }
+        
+        .tooltip-day {
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        
+        .tooltip-stats {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+        
+        .tooltip-percentage {
+            font-weight: bold;
+            color: var(--accent-success);
+        }
+        
+        @media (max-width: 768px) {
+            .performance-chart-wrapper {
+                flex-direction: column;
+            }
+            
+            .chart-stats-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: var(--border-1) solid var(--border-base);
+                flex-direction: row;
+                justify-content: space-around;
+            }
+            
+            #performance-canvas {
+                height: 140px;
+            }
+        }
+    `;
+    
+    existingStyle.innerHTML += chartCSS;
+}
+
+/**
+ * Calculate daily performance data
+ */
+function calculateDailyPerformance() {
+    const year = currentViewDate.getFullYear();
+    const month = currentViewDate.getMonth();
+    const today = new Date();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Get journey start to align with spreadsheet
+    const hResponse = { data: habitsCache };
+    const journeyStartStr = hResponse.journey_start || (habitsCache.length > 0 ? habitsCache[habitsCache.length - 1].created_at : new Date().toISOString());
+    const journeyStart = new Date(journeyStartStr);
+    journeyStart.setHours(0,0,0,0);
+    
+    const dailyData = [];
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const currentDate = new Date(year, month, day);
+        
+        // Skip if before journey start (to align with spreadsheet)
+        if (currentDate < journeyStart) {
+            dailyData.push({
+                day,
+                percentage: null,
+                completed: 0,
+                total: 0,
+                isEmpty: true
+            });
+            continue;
+        }
+        
+        // Skip if future date
+        if (currentDate > today) {
+            dailyData.push({
+                day,
+                percentage: null,
+                completed: 0,
+                total: 0,
+                isEmpty: true
+            });
+            continue;
+        }
+        
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        let dayTotal = 0;
+        let dayCompleted = 0;
+        
+        habitsCache.forEach(habit => {
+            const habitStart = new Date(habit.created_at);
+            habitStart.setHours(0, 0, 0, 0);
+            
+            if (currentDate >= habitStart) {
+                dayTotal++;
+                const checkin = checkinsCache.find(c => 
+                    String(c.habit_id) === String(habit.id) && c.date === dateStr
+                );
+                if (checkin) dayCompleted++;
+            }
+        });
+        
+        const percentage = dayTotal > 0 ? Math.round((dayCompleted / dayTotal) * 100) : 0;
+        
+        dailyData.push({
+            day,
+            percentage,
+            completed: dayCompleted,
+            total: dayTotal,
+            isEmpty: false
+        });
+    }
+    
+    return dailyData;
+}
+
+/**
+ * Calculate chart statistics for left panel
+ */
+function calculateChartStats() {
+    const dailyData = calculateDailyPerformance();
+    const validData = dailyData.filter(d => !d.isEmpty);
+    
+    if (validData.length === 0) {
+        return {
+            avgCompletion: 0,
+            bestDay: '-',
+            bestDayPercent: 0,
+            totalCompleted: 0,
+            totalPossible: 0
+        };
+    }
+    
+    // Calculate average completion
+    const totalPercentage = validData.reduce((sum, d) => sum + d.percentage, 0);
+    const avgCompletion = Math.round(totalPercentage / validData.length);
+    
+    // Find best day(s)
+    const maxPercentage = Math.max(...validData.map(d => d.percentage));
+    const bestDays = validData.filter(d => d.percentage === maxPercentage);
+    
+    let bestDay = '';
+    if (bestDays.length === 1) {
+        bestDay = `Day ${bestDays[0].day}`;
+    } else if (bestDays.length === validData.length) {
+        bestDay = 'All Days';
+    } else if (bestDays.length <= 3) {
+        bestDay = bestDays.map(d => d.day).join(', ');
+    } else {
+        bestDay = `${bestDays.length} days`;
+    }
+    
+    // Total completed vs possible
+    const totalCompleted = validData.reduce((sum, d) => sum + d.completed, 0);
+    const totalPossible = validData.reduce((sum, d) => sum + d.total, 0);
+    
+    return {
+        avgCompletion,
+        bestDay,
+        bestDayPercent: maxPercentage,
+        totalCompleted,
+        totalPossible
+    };
+}
+
+/**
+ * Render performance chart with hover tooltips
+ */
+function renderPerformanceChart() {
+    const canvas = document.getElementById('performance-canvas');
+    if (!canvas) return;
+    
+    const dailyData = calculateDailyPerformance();
+    if (dailyData.length === 0) return;
+    
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set canvas size
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = rect.height;
+    const padding = { top: 15, right: 15, bottom: 15, left: 15 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+    
+    // Colors
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const greenColor = '#10b981'; // Green for default/improvements
+    const redColor = '#ef4444';   // Red for declines only
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Filter out empty days and calculate points
+    const validData = dailyData.filter(d => !d.isEmpty);
+    if (validData.length === 0) return;
+    
+    // Calculate x-position for each day to align with spreadsheet columns
+    const points = dailyData.map((data, index) => {
+        if (data.isEmpty) {
+            return {
+                x: padding.left + (chartWidth / (dailyData.length - 1)) * index,
+                y: null,
+                data: data
+            };
+        }
+        return {
+            x: padding.left + (chartWidth / (dailyData.length - 1)) * index,
+            y: padding.top + chartHeight - (chartHeight * data.percentage / 100),
+            data: data
+        };
+    });
+    
+    // Filter valid points for drawing
+    const validPoints = points.filter(p => p.y !== null);
+    
+    // Draw gradient fill
+    if (validPoints.length > 0) {
+        const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
+        gradient.addColorStop(0, 'rgba(16, 185, 129, 0.15)');
+        gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(validPoints[0].x, padding.top + chartHeight);
+        validPoints.forEach(point => ctx.lineTo(point.x, point.y));
+        ctx.lineTo(validPoints[validPoints.length - 1].x, padding.top + chartHeight);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    // Draw line segments
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    for (let i = 1; i < validPoints.length; i++) {
+        const prev = validPoints[i - 1];
+        const curr = validPoints[i];
+        
+        // Determine color: RED only if current is LOWER than previous (dip)
+        const isDip = curr.data.percentage < prev.data.percentage;
+        ctx.strokeStyle = isDip ? redColor : greenColor;
+        
+        ctx.beginPath();
+        ctx.moveTo(prev.x, prev.y);
+        ctx.lineTo(curr.x, curr.y);
+        ctx.stroke();
+    }
+    
+    // Draw points
+    validPoints.forEach((point, index) => {
+        // Determine if next segment is a dip
+        let pointColor = greenColor;
+        if (index < validPoints.length - 1) {
+            const nextPoint = validPoints[index + 1];
+            const isDip = nextPoint.data.percentage < point.data.percentage;
+            pointColor = isDip ? redColor : greenColor;
+        }
+        
+        // Point
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.strokeStyle = pointColor;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    });
+    
+    // Store points for hover detection
+    canvas._chartPoints = points;
+}
+
+/**
+ * Add chart to page with stats panel and tooltip
+ */
+function renderChartSection() {
+    const spreadsheetContainer = document.getElementById('habits-spreadsheet');
+    if (!spreadsheetContainer) return;
+    
+    // Check if chart already exists
+    let chartWrapper = document.getElementById('performance-chart-wrapper');
+    
+    if (!chartWrapper) {
+        // Calculate stats
+        const stats = calculateChartStats();
+        
+        // Create chart wrapper
+        chartWrapper = document.createElement('div');
+        chartWrapper.id = 'performance-chart-wrapper';
+        chartWrapper.className = 'performance-chart-wrapper';
+        chartWrapper.innerHTML = `
+            <div class="chart-stats-panel">
+                <div class="stat-item">
+                    <div class="stat-label">Avg Rate</div>
+                    <div class="stat-value">${stats.avgCompletion}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Best Day</div>
+                    <div class="stat-value">${stats.bestDay}</div>
+                    <div class="stat-subtext">${stats.bestDayPercent}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value">${stats.totalCompleted}/${stats.totalPossible}</div>
+                    <div class="stat-subtext">completed</div>
+                </div>
+            </div>
+            <div class="chart-canvas-container">
+                <canvas id="performance-canvas"></canvas>
+                <div class="chart-tooltip" id="chart-tooltip">
+                    <div class="tooltip-day"></div>
+                    <div class="tooltip-stats"></div>
+                </div>
+            </div>
+        `;
+        
+        // Insert BEFORE spreadsheet table
+        spreadsheetContainer.parentNode.insertBefore(chartWrapper, spreadsheetContainer);
+        
+        // Setup hover interactions
+        setupChartHover();
+    } else {
+        // Update stats if chart exists
+        const stats = calculateChartStats();
+        const statsPanel = chartWrapper.querySelector('.chart-stats-panel');
+        if (statsPanel) {
+            statsPanel.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-label">Avg Rate</div>
+                    <div class="stat-value">${stats.avgCompletion}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Best Day</div>
+                    <div class="stat-value">${stats.bestDay}</div>
+                    <div class="stat-subtext">${stats.bestDayPercent}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value">${stats.totalCompleted}/${stats.totalPossible}</div>
+                    <div class="stat-subtext">completed</div>
+                </div>
+            `;
+        }
+    }
+    
+    // Render the chart
+    setTimeout(() => renderPerformanceChart(), 100);
+}
+
+/**
+ * Setup hover interactions for tooltip
+ */
+function setupChartHover() {
+    const canvas = document.getElementById('performance-canvas');
+    const tooltip = document.getElementById('chart-tooltip');
+    if (!canvas || !tooltip) return;
+    
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const points = canvas._chartPoints;
+        if (!points) return;
+        
+        // Find closest point
+        let closestPoint = null;
+        let minDistance = 25; // Hover threshold
+        
+        points.forEach(point => {
+            if (point.y === null) return; // Skip empty days
+            
+            const distance = Math.sqrt(
+                Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2)
+            );
+            
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPoint = point;
+            }
+        });
+        
+        if (closestPoint) {
+            const data = closestPoint.data;
+            
+            // Update tooltip content
+            tooltip.querySelector('.tooltip-day').textContent = `Day ${data.day}`;
+            tooltip.querySelector('.tooltip-stats').innerHTML = `
+                <span class="tooltip-percentage">${data.percentage}%</span> 
+                (${data.completed}/${data.total} habits completed)
+            `;
+            
+            // Position tooltip
+            const tooltipWidth = 180; // Approximate
+            let tooltipX = e.clientX + 10;
+            let tooltipY = e.clientY - 50;
+            
+            // Keep tooltip in bounds
+            if (tooltipX + tooltipWidth > window.innerWidth - 20) {
+                tooltipX = e.clientX - tooltipWidth - 10;
+            }
+            
+            tooltip.style.left = tooltipX + 'px';
+            tooltip.style.top = tooltipY + 'px';
+            tooltip.classList.add('visible');
+        } else {
+            tooltip.classList.remove('visible');
+        }
+    });
+    
+    canvas.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+    });
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    const canvas = document.getElementById('performance-canvas');
+    if (canvas) {
+        renderPerformanceChart();
+    }
+});
+
+/**
+ * INTEGRATION INSTRUCTIONS:
+ * 
+ * 1. Add chart styles - In your injectThemeAwareStyles() function, add this line at the end:
+ *    addChartStyles();
+ * 
+ * 2. Render chart - In your renderSpreadsheet() function, add this line BEFORE you build the table HTML:
+ *    renderChartSection();
+ * 
+ * LEFT PANEL STATS:
+ * - Avg Rate: Average completion percentage for the month
+ * - Best Day: Day(s) with highest completion (shows multiple if tied)
+ * - Total: Total habits completed / Total possible
+ * 
+ * The left panel is exactly 180px wide to match your habit names column!
+ */
