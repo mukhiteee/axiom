@@ -98,6 +98,7 @@ function injectThemeAwareStyles() {
     `;
     document.head.appendChild(style);
     addChartStyles();
+    addSleepTrackerStyles();
 }
 
 async function initHabitsView() {
@@ -115,7 +116,8 @@ async function initHabitsView() {
             countDisplay.innerText = `${count} Habit${count !== 1 ? 's' : ''} active`;
         }
         
-        await renderSpreadsheet(hResponse); 
+        await renderSpreadsheet(hResponse);
+        renderSleepTracker();
     }
 }
 
@@ -972,18 +974,875 @@ window.addEventListener('resize', () => {
 });
 
 /**
+ * AXIOM SLEEP TRACKER MODULE
+ * Add this to the END of your habits.js file
+ * 
+ * FEATURES:
+ * - Sleep cycle wave graph (Awake/Sleep/Deep phases)
+ * - Sleep quality bar chart (daily percentages)
+ * - Stats cards (bedtime, wake time, duration, quality, mood)
+ * - Time period filters (Days/Weeks/Months)
+ * - Log sleep modal
+ */
+
+let sleepDataCache = [];
+
+/**
+ * Add sleep tracker styles
+ */
+function addSleepTrackerStyles() {
+    const existingStyle = document.getElementById('axiom-card-styles');
+    if (!existingStyle) return;
+    
+    const sleepCSS = `
+        /* Sleep Tracker Section */
+        .sleep-tracker-section {
+            margin-top: var(--space-8);
+            background: var(--bg-primary);
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+        }
+        
+        .sleep-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .sleep-title {
+            font-size: var(--text-xl);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+        }
+        
+        .btn-log-sleep {
+            padding: var(--space-3) var(--space-5);
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-semibold);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-log-sleep:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Sleep Cycle Graph */
+        .sleep-cycle-card {
+            background: var(--bg-secondary);
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-xl);
+            padding: var(--space-5);
+            margin-bottom: var(--space-5);
+        }
+        
+        .cycle-graph-title {
+            font-size: var(--text-sm);
+            font-weight: var(--weight-semibold);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        #sleep-cycle-canvas {
+            width: 100%;
+            height: 200px;
+            display: block;
+        }
+        
+        /* Quality Chart */
+        .quality-chart-card {
+            background: var(--bg-secondary);
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-xl);
+            padding: var(--space-5);
+            margin-bottom: var(--space-5);
+        }
+        
+        .quality-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+        
+        .quality-title {
+            font-size: var(--text-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .period-filters {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .period-btn {
+            padding: var(--space-2) var(--space-4);
+            background: transparent;
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-md);
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .period-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+        
+        .period-btn:hover:not(.active) {
+            border-color: var(--border-strong);
+        }
+        
+        #quality-chart-canvas {
+            width: 100%;
+            height: 180px;
+            display: block;
+        }
+        
+        /* Sleep Stats Grid */
+        .sleep-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .sleep-stat-card {
+            background: var(--bg-secondary);
+            border: var(--border-1) solid var(--border-base);
+            border-radius: var(--radius-xl);
+            padding: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-label-small {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            margin-bottom: 2px;
+        }
+        
+        .stat-value-large {
+            font-size: var(--text-xl);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+        }
+        
+        .stat-subtitle {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        /* Sleep Log Modal */
+        #sleep-log-modal .modal-card {
+            max-width: 500px;
+        }
+        
+        .time-input-group {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .time-input-group .form-field {
+            flex: 1;
+        }
+        
+        .quality-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--bg-secondary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+        }
+        
+        .quality-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .quality-value {
+            text-align: center;
+            font-size: var(--text-2xl);
+            font-weight: var(--weight-bold);
+            color: var(--accent-primary);
+            margin-top: var(--space-2);
+        }
+        
+        @media (max-width: 768px) {
+            .sleep-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            #sleep-cycle-canvas {
+                height: 150px;
+            }
+            
+            #quality-chart-canvas {
+                height: 140px;
+            }
+        }
+    `;
+    
+    existingStyle.innerHTML += sleepCSS;
+}
+
+/**
+ * Render sleep tracker section
+ */
+function renderSleepTracker() {
+    const container = document.querySelector('.habits-spreadsheet-container');
+    if (!container) return;
+    
+    // Check if sleep tracker already exists
+    let sleepSection = document.getElementById('sleep-tracker-section');
+    
+    if (!sleepSection) {
+        sleepSection = document.createElement('div');
+        sleepSection.id = 'sleep-tracker-section';
+        sleepSection.className = 'sleep-tracker-section';
+        sleepSection.innerHTML = `
+            <div class="sleep-header">
+                <h2 class="sleep-title">Sleep Tracker</h2>
+                <button class="btn-log-sleep" id="log-sleep-btn">
+                    🌙 Log Sleep
+                </button>
+            </div>
+            
+            <!-- Sleep Cycle Graph -->
+            <div class="sleep-cycle-card">
+                <div class="cycle-graph-title">Sleep Cycle - Last Night</div>
+                <canvas id="sleep-cycle-canvas"></canvas>
+            </div>
+            
+            <!-- Quality Bar Chart -->
+            <div class="quality-chart-card">
+                <div class="quality-header">
+                    <div class="quality-title">Sleep Quality</div>
+                    <div class="period-filters">
+                        <button class="period-btn active" data-period="days">Days</button>
+                        <button class="period-btn" data-period="weeks">Weeks</button>
+                        <button class="period-btn" data-period="months">Months</button>
+                    </div>
+                </div>
+                <canvas id="quality-chart-canvas"></canvas>
+            </div>
+            
+            <!-- Sleep Stats -->
+            <div class="sleep-stats-grid">
+                <div class="sleep-stat-card">
+                    <div class="stat-icon">🌙</div>
+                    <div class="stat-content">
+                        <div class="stat-label-small">Bedtime</div>
+                        <div class="stat-value-large" id="avg-bedtime">--:--</div>
+                        <div class="stat-subtitle">Average</div>
+                    </div>
+                </div>
+                
+                <div class="sleep-stat-card">
+                    <div class="stat-icon">☀️</div>
+                    <div class="stat-content">
+                        <div class="stat-label-small">Wake Up</div>
+                        <div class="stat-value-large" id="avg-wakeup">--:--</div>
+                        <div class="stat-subtitle">Average</div>
+                    </div>
+                </div>
+                
+                <div class="sleep-stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-content">
+                        <div class="stat-label-small">Duration</div>
+                        <div class="stat-value-large" id="avg-duration">0h</div>
+                        <div class="stat-subtitle">Average</div>
+                    </div>
+                </div>
+                
+                <div class="sleep-stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-label-small">Quality</div>
+                        <div class="stat-value-large" id="avg-quality">0%</div>
+                        <div class="stat-subtitle">Average</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert after spreadsheet container
+        container.parentNode.insertBefore(sleepSection, container.nextSibling);
+        
+        // Setup event listeners
+        setupSleepTrackerEvents();
+    }
+    
+    // Load sleep data and render charts
+    loadSleepData();
+}
+
+/**
+ * Setup event listeners
+ */
+function setupSleepTrackerEvents() {
+    // Log sleep button
+    const logBtn = document.getElementById('log-sleep-btn');
+    if (logBtn) {
+        logBtn.onclick = () => openSleepLogModal();
+    }
+    
+    // Period filter buttons
+    const periodBtns = document.querySelectorAll('.period-btn');
+    periodBtns.forEach(btn => {
+        btn.onclick = () => {
+            periodBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderQualityChart(btn.dataset.period);
+        };
+    });
+}
+
+/**
+ * Load sleep data from API
+ */
+async function loadSleepData() {
+    try {
+        const response = await fetch('api/sleep.php?action=list');
+        const data = await response.json();
+        
+        if (data.success) {
+            sleepDataCache = data.data || [];
+            renderSleepCycleGraph();
+            renderQualityChart('days');
+            updateSleepStats();
+        }
+    } catch (error) {
+        console.error('Error loading sleep data:', error);
+        // Show empty state
+        sleepDataCache = [];
+    }
+}
+
+/**
+ * Render sleep cycle wave graph
+ */
+function renderSleepCycleGraph() {
+    const canvas = document.getElementById('sleep-cycle-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = rect.height;
+    const padding = { top: 20, right: 30, bottom: 30, left: 50 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+    
+    // Colors
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const lineColor = '#22d3ee';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+    const textColor = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)';
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // Get last sleep entry
+    const lastSleep = sleepDataCache.length > 0 ? sleepDataCache[0] : null;
+    
+    if (!lastSleep || !lastSleep.cycle_data) {
+        // Show placeholder
+        ctx.fillStyle = textColor;
+        ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No sleep data yet', width / 2, height / 2);
+        return;
+    }
+    
+    // Parse cycle data (assume format: "awake,sleep,deep,sleep,awake,...")
+    const cyclePhases = lastSleep.cycle_data.split(',');
+    const phaseValues = cyclePhases.map(phase => {
+        if (phase === 'awake') return 1;
+        if (phase === 'sleep') return 0.5;
+        if (phase === 'deep') return 0;
+        return 0.5;
+    });
+    
+    // Draw Y-axis labels
+    const labels = ['Awake', 'Sleep', 'Deep sleep'];
+    const labelY = [padding.top, padding.top + chartHeight / 2, padding.top + chartHeight];
+    
+    ctx.fillStyle = textColor;
+    ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    ctx.textAlign = 'right';
+    
+    labels.forEach((label, i) => {
+        ctx.fillText(label, padding.left - 10, labelY[i] + 4);
+    });
+    
+    // Draw grid lines
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    
+    for (let i = 0; i <= 2; i++) {
+        const y = padding.top + (chartHeight / 2) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + chartWidth, y);
+        ctx.stroke();
+    }
+    
+    // Calculate points
+    const points = phaseValues.map((value, index) => ({
+        x: padding.left + (chartWidth / (phaseValues.length - 1)) * index,
+        y: padding.top + chartHeight - (chartHeight * value)
+    }));
+    
+    // Draw gradient fill
+    const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
+    gradient.addColorStop(0, 'rgba(34, 211, 238, 0.2)');
+    gradient.addColorStop(1, 'rgba(34, 211, 238, 0)');
+    
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, padding.top + chartHeight);
+    points.forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.lineTo(points[points.length - 1].x, padding.top + chartHeight);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Draw line
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    points.forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.stroke();
+    
+    // Draw time labels (X-axis)
+    const timeLabels = ['11', '12', '1', '2', '3', '4', '5', '6', '7', '8'];
+    const labelInterval = Math.ceil(timeLabels.length / 8);
+    
+    ctx.fillStyle = textColor;
+    ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    
+    timeLabels.forEach((label, i) => {
+        if (i % labelInterval === 0) {
+            const x = padding.left + (chartWidth / (timeLabels.length - 1)) * i;
+            ctx.fillText(label, x, height - 10);
+        }
+    });
+}
+
+/**
+ * Render quality bar chart
+ */
+function renderQualityChart(period = 'days') {
+    const canvas = document.getElementById('quality-chart-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = rect.height;
+    const padding = { top: 20, right: 20, bottom: 40, left: 40 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+    
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const barColor = '#fbbf24';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+    const textColor = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)';
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // Get data based on period
+    const data = getSleepQualityData(period);
+    
+    if (data.length === 0) {
+        ctx.fillStyle = textColor;
+        ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No sleep data yet', width / 2, height / 2);
+        return;
+    }
+    
+    // Draw grid
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    
+    for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + chartWidth, y);
+        ctx.stroke();
+        
+        // Y-axis labels
+        const value = 100 - (i * 25);
+        ctx.fillStyle = textColor;
+        ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(value + '%', padding.left - 8, y + 4);
+    }
+    
+    // Draw bars
+    const barWidth = (chartWidth / data.length) * 0.7;
+    const barSpacing = (chartWidth / data.length) * 0.3;
+    
+    data.forEach((item, index) => {
+        const barHeight = (chartHeight * item.quality) / 100;
+        const x = padding.left + (index * (barWidth + barSpacing)) + barSpacing / 2;
+        const y = padding.top + chartHeight - barHeight;
+        
+        // Bar
+        ctx.fillStyle = barColor;
+        ctx.fillRect(x, y, barWidth, barHeight);
+        
+        // Label
+        ctx.fillStyle = textColor;
+        ctx.font = '9px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.label, x + barWidth / 2, height - 10);
+    });
+}
+
+/**
+ * Get sleep quality data for period
+ */
+function getSleepQualityData(period) {
+    if (sleepDataCache.length === 0) return [];
+    
+    // For demo, generate last 7 days
+    const data = [];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dayName = days[date.getDay()];
+        
+        // Find sleep data for this date
+        const dateStr = date.toISOString().split('T')[0];
+        const sleepEntry = sleepDataCache.find(s => s.date === dateStr);
+        
+        data.push({
+            label: dayName,
+            quality: sleepEntry ? sleepEntry.quality : 0
+        });
+    }
+    
+    return data;
+}
+
+/**
+ * Update sleep stats cards
+ */
+function updateSleepStats() {
+    if (sleepDataCache.length === 0) return;
+    
+    // Calculate averages from last 7 days
+    const recentData = sleepDataCache.slice(0, 7);
+    
+    // Average bedtime
+    const avgBedtimeMinutes = recentData.reduce((sum, s) => {
+        const [hours, minutes] = s.bedtime.split(':');
+        return sum + (parseInt(hours) * 60 + parseInt(minutes));
+    }, 0) / recentData.length;
+    
+    const bedtimeHours = Math.floor(avgBedtimeMinutes / 60);
+    const bedtimeMinutes = Math.round(avgBedtimeMinutes % 60);
+    document.getElementById('avg-bedtime').textContent = 
+        `${bedtimeHours}:${String(bedtimeMinutes).padStart(2, '0')}`;
+    
+    // Average wake up
+    const avgWakeupMinutes = recentData.reduce((sum, s) => {
+        const [hours, minutes] = s.wakeup_time.split(':');
+        return sum + (parseInt(hours) * 60 + parseInt(minutes));
+    }, 0) / recentData.length;
+    
+    const wakeupHours = Math.floor(avgWakeupMinutes / 60);
+    const wakeupMinutes = Math.round(avgWakeupMinutes % 60);
+    document.getElementById('avg-wakeup').textContent = 
+        `${wakeupHours}:${String(wakeupMinutes).padStart(2, '0')}`;
+    
+    // Average duration
+    const avgDuration = recentData.reduce((sum, s) => sum + s.duration, 0) / recentData.length;
+    const durationHours = Math.floor(avgDuration);
+    const durationMinutes = Math.round((avgDuration % 1) * 60);
+    document.getElementById('avg-duration').textContent = 
+        `${durationHours}h ${durationMinutes}m`;
+    
+    // Average quality
+    const avgQuality = Math.round(
+        recentData.reduce((sum, s) => sum + s.quality, 0) / recentData.length
+    );
+    document.getElementById('avg-quality').textContent = `${avgQuality}%`;
+}
+
+/**
+ * Open sleep log modal
+ */
+function openSleepLogModal() {
+    // Create modal if doesn't exist
+    let modal = document.getElementById('sleep-log-modal');
+    
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'sleep-log-modal';
+        modal.className = 'modal-overlay';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2>Log Sleep</h2>
+                    <button class="modal-close" id="close-sleep-log">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form class="modal-body" id="sleep-log-form">
+                    <div class="form-field">
+                        <label for="sleep-date">Date</label>
+                        <input type="date" id="sleep-date" required>
+                    </div>
+                    
+                    <div class="time-input-group">
+                        <div class="form-field">
+                            <label for="sleep-bedtime">Bedtime</label>
+                            <input type="time" id="sleep-bedtime" required>
+                        </div>
+                        
+                        <div class="form-field">
+                            <label for="sleep-wakeup">Wake Up</label>
+                            <input type="time" id="sleep-wakeup" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label for="sleep-quality">Sleep Quality</label>
+                        <input type="range" id="sleep-quality" class="quality-slider" min="0" max="100" value="70">
+                        <div class="quality-value" id="quality-display">70%</div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>How do you feel?</label>
+                        <div class="mood-picker">
+                            <button type="button" class="mood-btn" data-mood="terrible">😢</button>
+                            <button type="button" class="mood-btn" data-mood="bad">😞</button>
+                            <button type="button" class="mood-btn" data-mood="okay">😐</button>
+                            <button type="button" class="mood-btn" data-mood="good">🙂</button>
+                            <button type="button" class="mood-btn" data-mood="great">😊</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label for="sleep-notes">Notes / Dreams</label>
+                        <textarea id="sleep-notes" rows="3" placeholder="Any notes about your sleep..."></textarea>
+                    </div>
+                </form>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-sleep-log">Cancel</button>
+                    <button type="submit" class="btn-primary" id="save-sleep-log">Save Sleep Log</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Setup modal events
+        setupSleepModalEvents();
+    }
+    
+    // Set today's date
+    document.getElementById('sleep-date').value = new Date().toISOString().split('T')[0];
+    
+    modal.style.display = 'flex';
+}
+
+/**
+ * Setup sleep modal events
+ */
+function setupSleepModalEvents() {
+    // Close button
+    document.getElementById('close-sleep-log').onclick = () => {
+        document.getElementById('sleep-log-modal').style.display = 'none';
+    };
+    
+    document.getElementById('cancel-sleep-log').onclick = () => {
+        document.getElementById('sleep-log-modal').style.display = 'none';
+    };
+    
+    // Quality slider
+    const qualitySlider = document.getElementById('sleep-quality');
+    const qualityDisplay = document.getElementById('quality-display');
+    
+    qualitySlider.oninput = (e) => {
+        qualityDisplay.textContent = e.target.value + '%';
+    };
+    
+    // Mood buttons
+    document.querySelectorAll('#sleep-log-modal .mood-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('#sleep-log-modal .mood-btn').forEach(b => 
+                b.classList.remove('selected')
+            );
+            btn.classList.add('selected');
+        };
+    });
+    
+    // Save button
+    document.getElementById('save-sleep-log').onclick = async (e) => {
+        e.preventDefault();
+        await saveSleepLog();
+    };
+}
+
+/**
+ * Save sleep log to API
+ */
+async function saveSleepLog() {
+    const date = document.getElementById('sleep-date').value;
+    const bedtime = document.getElementById('sleep-bedtime').value;
+    const wakeup = document.getElementById('sleep-wakeup').value;
+    const quality = document.getElementById('sleep-quality').value;
+    const mood = document.querySelector('#sleep-log-modal .mood-btn.selected')?.dataset.mood || 'okay';
+    const notes = document.getElementById('sleep-notes').value;
+    
+    if (!date || !bedtime || !wakeup) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Calculate duration
+    const bedDateTime = new Date(`${date} ${bedtime}`);
+    const wakeDateTime = new Date(`${date} ${wakeup}`);
+    if (wakeDateTime < bedDateTime) {
+        wakeDateTime.setDate(wakeDateTime.getDate() + 1);
+    }
+    const duration = (wakeDateTime - bedDateTime) / (1000 * 60 * 60); // hours
+    
+    const sleepData = {
+        date,
+        bedtime,
+        wakeup_time: wakeup,
+        duration: duration.toFixed(2),
+        quality: parseInt(quality),
+        mood,
+        notes,
+        cycle_data: generateDummyCycleData() // For demo
+    };
+    
+    try {
+        const response = await fetch('api/sleep.php?action=log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sleepData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('sleep-log-modal').style.display = 'none';
+            document.getElementById('sleep-log-form').reset();
+            loadSleepData(); // Reload data
+        } else {
+            alert('Error saving sleep log: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error saving sleep log:', error);
+        alert('Error saving sleep log');
+    }
+}
+
+/**
+ * Generate dummy cycle data for demo
+ */
+function generateDummyCycleData() {
+    const phases = ['awake', 'sleep', 'deep', 'sleep'];
+    const cycleData = [];
+    
+    for (let i = 0; i < 30; i++) {
+        cycleData.push(phases[Math.floor(Math.random() * phases.length)]);
+    }
+    
+    return cycleData.join(',');
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (document.getElementById('sleep-cycle-canvas')) {
+        renderSleepCycleGraph();
+        renderQualityChart(document.querySelector('.period-btn.active')?.dataset.period || 'days');
+    }
+});
+
+/**
  * INTEGRATION INSTRUCTIONS:
  * 
- * 1. Add chart styles - In your injectThemeAwareStyles() function, add this line at the end:
- *    addChartStyles();
+ * 1. Add styles - In your injectThemeAwareStyles() function:
+ *    addSleepTrackerStyles();
  * 
- * 2. Render chart - In your renderSpreadsheet() function, add this line BEFORE you build the table HTML:
- *    renderChartSection();
+ * 2. Render tracker - In your initHabitsView() function, after renderSpreadsheet():
+ *    renderSleepTracker();
  * 
- * LEFT PANEL STATS:
- * - Avg Rate: Average completion percentage for the month
- * - Best Day: Day(s) with highest completion (shows multiple if tied)
- * - Total: Total habits completed / Total possible
- * 
- * The left panel is exactly 180px wide to match your habit names column!
+ * 3. Create API endpoint - Create api/sleep.php with actions: 'list' and 'log'
+ *    Database table: sleep_logs (id, user_id, date, bedtime, wakeup_time, duration, quality, mood, notes, cycle_data)
  */
