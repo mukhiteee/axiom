@@ -9,7 +9,7 @@ session_start();
 
 // Database connection (adjust these)
 $host = 'localhost';
-$dbname = 'axiom_habits';
+$dbname = 'axiom';
 $username = 'root';
 $password = '';
 
