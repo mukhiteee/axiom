@@ -117,8 +117,8 @@ async function initHabitsView() {
         }
         
         await renderSpreadsheet(hResponse);
-        renderSleepTracker();
     }
+    renderSleepTracker();
 }
 
 async function fetchAPI(action, method = 'GET', body = null) {
@@ -1833,16 +1833,3 @@ window.addEventListener('resize', () => {
         renderQualityChart(document.querySelector('.period-btn.active')?.dataset.period || 'days');
     }
 });
-
-/**
- * INTEGRATION INSTRUCTIONS:
- * 
- * 1. Add styles - In your injectThemeAwareStyles() function:
- *    addSleepTrackerStyles();
- * 
- * 2. Render tracker - In your initHabitsView() function, after renderSpreadsheet():
- *    renderSleepTracker();
- * 
- * 3. Create API endpoint - Create api/sleep.php with actions: 'list' and 'log'
- *    Database table: sleep_logs (id, user_id, date, bedtime, wakeup_time, duration, quality, mood, notes, cycle_data)
- */
