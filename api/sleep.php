@@ -49,7 +49,7 @@ switch($action) {
 function listSleepLogs($pdo, $user_id) {
     try {
         $stmt = $pdo->prepare("
-            SELECT * FROM sleep_logs 
+            SELECT * FROM sleep_logs2 
             WHERE user_id = ? 
             ORDER BY date DESC 
             LIMIT 30
@@ -88,14 +88,14 @@ function logSleep($pdo, $user_id) {
     
     try {
         // Check if entry exists for this date
-        $stmt = $pdo->prepare("SELECT id FROM sleep_logs WHERE user_id = ? AND date = ?");
+        $stmt = $pdo->prepare("SELECT id FROM sleep_logs2 WHERE user_id = ? AND date = ?");
         $stmt->execute([$user_id, $date]);
         $existing = $stmt->fetch();
         
         if ($existing) {
             // Update existing entry
             $stmt = $pdo->prepare("
-                UPDATE sleep_logs 
+                UPDATE sleep_logs2 
                 SET bedtime = ?, wakeup_time = ?, duration = ?, quality = ?, 
                     mood = ?, notes = ?, cycle_data = ?, updated_at = NOW()
                 WHERE id = ?
@@ -107,7 +107,7 @@ function logSleep($pdo, $user_id) {
         } else {
             // Insert new entry
             $stmt = $pdo->prepare("
-                INSERT INTO sleep_logs 
+                INSERT INTO sleep_logs2 
                 (user_id, date, bedtime, wakeup_time, duration, quality, mood, notes, cycle_data, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
             ");
@@ -135,7 +135,7 @@ function deleteSleepLog($pdo, $user_id) {
     }
     
     try {
-        $stmt = $pdo->prepare("DELETE FROM sleep_logs WHERE id = ? AND user_id = ?");
+        $stmt = $pdo->prepare("DELETE FROM sleep_logs2 WHERE id = ? AND user_id = ?");
         $stmt->execute([$id, $user_id]);
         
         echo json_encode(['success' => true]);
