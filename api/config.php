@@ -14,10 +14,11 @@ if (!defined('AXIOM_INIT')) {
 // DATABASE CONFIGURATION
 // ═══════════════════════════════════════════════════════════
 
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'db.fr-pari1.bengt.wasmernet.com');
+define('DB_PORT', 10272);
 define('DB_NAME', 'axiom');
-define('DB_USER', 'root');
-define('DB_PASS', '');  // Change this to your MySQL password
+define('DB_USER', 'd7c5d31777108000850fc01829fb');
+define('DB_PASS', '0696d7c5-d317-79f8-8000-e742b1c02548');
 define('DB_CHARSET', 'utf8mb4');
 
 // ═══════════════════════════════════════════════════════════
