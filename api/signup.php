@@ -4,20 +4,9 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-// 2. DATABASE CONNECTION (Update these 4 lines)
-$host = 'localhost';
-$db   = 'axiom'; 
-$user = 'root';
-$pass = ''; 
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("<div style='color:white; background:red; padding:10px;'>Connection Failed: " . $e->getMessage() . "</div>");
-}
+// 2. INTEGRATE AXIOM DATABASE
+// This pulls in your Database class and the db() helper function
+require_once __DIR__ . '/db.php';
 
 // 3. REGISTRATION LOGIC
 $message = "";
@@ -37,17 +26,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup_btn'])) {
         $hashed_password = password_hash($user_pass, PASSWORD_DEFAULT);
 
         try {
-            $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
+            // Using your db() helper function from db.php
+            $stmt = db()->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
+            
             if ($stmt->execute([$user_name, $user_email, $hashed_password])) {
                 $message = "Success! Your account is active. <a href='login.php' style='color:inherit; font-weight:bold;'>Login here</a>";
                 $status = "success";
             }
         } catch (PDOException $e) {
-            if ($e->getCode() == 23000) { // Unique constraint violation
+            // Check for duplicate entry (Error Code 23000)
+            if ($e->getCode() == 23000) {
                 $message = "Username or Email is already taken.";
                 $status = "error";
             } else {
-                $message = "Database error: " . $e->getMessage();
+                // Log the real error for the dev, show a generic one to the user
+                error_log("Signup Error: " . $e->getMessage());
+                $message = "An internal error occurred. Please try again later.";
                 $status = "error";
             }
         }
@@ -109,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup_btn'])) {
             color: white;
             font-size: 1rem;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         input:focus { outline: none; border-color: var(--accent); background: rgba(0,0,0,0.5); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
