@@ -1,14 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
-   AXIOM // DASHBOARD
-   Main application layout - All colors from variables.css
-   ═══════════════════════════════════════════════════════════ */
+    AXIOM // DASHBOARD
+    Main application layout - All colors from variables.css
+    ═══════════════════════════════════════════════════════════ */
 
 @import url('variables.css');
 @import url('themes.css');
 
 /* ═══════════════════════════════════════════════════════════
-   RESET & BASE
-   ═══════════════════════════════════════════════════════════ */
+    RESET & BASE
+    ═══════════════════════════════════════════════════════════ */
 
 * {
   margin: 0;
@@ -28,8 +28,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   DASHBOARD LAYOUT
-   ═══════════════════════════════════════════════════════════ */
+    DASHBOARD LAYOUT
+    ═══════════════════════════════════════════════════════════ */
 
 .dashboard {
   display: grid;
@@ -39,8 +39,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   SIDEBAR (MINIMALIST DESIGN)
-   ═══════════════════════════════════════════════════════════ */
+    SIDEBAR (MINIMALIST DESIGN)
+    ═══════════════════════════════════════════════════════════ */
 
 .sidebar {
   background: var(--bg-primary);
@@ -223,8 +223,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MAIN CONTENT AREA
-   ═══════════════════════════════════════════════════════════ */
+    MAIN CONTENT AREA
+    ═══════════════════════════════════════════════════════════ */
 
 .main-content {
   background: var(--bg-base);
@@ -494,46 +494,11 @@ body {
   color: var(--text-tertiary);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ SPREADSHEET GRID (The "Axiom" No-Scroll Edition) ═══ */
 
-@media (max-width: 1024px) {
-  .dashboard {
-    grid-template-columns: 1fr;
-  }
-  
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: var(--z-modal);
-    transform: translateX(-100%);
-    width: 260px;
-  }
-  
-  .sidebar.mobile-open {
-    transform: translateX(0);
-    box-shadow: var(--shadow-2xl);
-  }
-}
-
-@media (max-width: 640px) {
-  .page-container {
-    padding: var(--space-4);
-  }
-  
-  .page-header,
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* 2. SPREADSHEET GRID (The "Axiom" No-Scroll Edition) */
 .habits-spreadsheet-container {
     width: 100%;
-    overflow-x: hidden; /* Lock horizontal scrolling for that "Single Page" feel */
+    overflow-x: hidden;
     background: var(--bg-primary);
     border: var(--border-1) solid var(--border-base);
     border-radius: var(--radius-2xl);
@@ -542,12 +507,11 @@ body {
 }
 
 .habits-spreadsheet table {
-    width: 100%; /* Force table to fill the container exactly */
+    width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* Essential: Forces columns to respect the widths below */
+    table-layout: fixed;
 }
 
-/* Sidebar: 20% of viewport width. Scalable and sticky. */
 .sticky-col {
     position: sticky;
     left: 0;
@@ -558,27 +522,24 @@ body {
     text-align: left !important;
     padding: 0 var(--space-3) !important;
     font-weight: 600;
-    font-size: clamp(10px, 0.8vw, 14px); /* Scales font with screen size */
+    font-size: clamp(10px, 0.8vw, 14px);
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible !important;
     text-overflow: ellipsis;
 }
 
-/* Day Columns: Remaining 80% divided by 31 days */
 .habits-spreadsheet th:not(.sticky-col), 
 .habits-spreadsheet td:not(.sticky-col) {
     width: calc(80% / 31); 
-    height: clamp(30px, 4vh, 40px); /* Height scales with vertical space */
+    height: clamp(30px, 4vh, 40px);
     padding: 0;
     text-align: center;
     border: 1px solid var(--border-base);
-    font-size: clamp(8px, 0.6vw, 11px); /* Dates scale down on small screens */
+    font-size: clamp(8px, 0.6vw, 11px);
     position: relative;
 }
 
-/* The Habit Box (Checkbox style) - Scalable */
 .habit-checkbox {
-    /* Scale based on Viewport Width so they never overlap */
     width: 1.6vw; 
     height: 1.6vw;
     min-width: 18px;
@@ -613,15 +574,15 @@ body {
     border-radius: 50%;
 }
 
-/* Today Highlighter */
 .today-highlight {
     background: var(--primary-glow-subtle) !important;
     color: var(--primary);
     font-weight: bold;
-    outline: 1px inset var(--primary); /* Makes the current day pop in a tight grid */
+    outline: 1px inset var(--primary);
 }
 
-/* 3. MODAL & FORM STYLES (No changes needed, kept for consistency) */
+/* ═══ MODAL & FORM STYLES ═══ */
+
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -647,63 +608,9 @@ body {
     box-shadow: var(--shadow-2xl);
 }
 
-/* 4. MOBILE ADAPTIVE DESIGN (Axiom Mobile) */
-@media (max-width: 768px) {
-    /* Allow horizontal scroll on mobile so the grid remains usable */
-    .habits-spreadsheet-container {
-        overflow-x: auto;
-        padding: var(--space-2);
-        max-height: none; /* Let the page scroll naturally */
-    }
-
-    .habits-spreadsheet table {
-        width: max-content; /* Stop trying to fit everything on one screen */
-        table-layout: auto;
-    }
-
-    /* Make the sticky column narrower but readable */
-    .sticky-col {
-        min-width: 120px;
-        width: 120px;
-        font-size: 12px;
-        padding: 0 var(--space-2) !important;
-    }
-
-    /* Make cells BIGGER for thumbs */
-    .habits-spreadsheet th:not(.sticky-col), 
-    .habits-spreadsheet td:not(.sticky-col) {
-        width: 44px; /* Big enough to tap easily */
-        height: 44px;
-        font-size: 12px;
-    }
-
-    .habit-checkbox {
-        width: 32px; 
-        height: 32px;
-        border-radius: 8px;
-    }
-
-    /* Hide the less important data on mobile to save vertical space */
-    .mobile-hide {
-        display: none;
-    }
-
-    /* Add a "Swipe" indicator hint */
-    .habits-spreadsheet-container::after {
-        content: '← Swipe for dates →';
-        display: block;
-        text-align: center;
-        font-size: 10px;
-        color: var(--text-secondary);
-        padding: var(--space-2);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-}
-
 .field-help-text {
     font-size: 0.75rem;
-    color: #94a3b8; /* Slate 400 */
+    color: #94a3b8;
     margin-top: 6px;
     font-style: italic;
     min-height: 1.2em;
@@ -715,7 +622,6 @@ body {
     gap: 15px;
 }
 
-/* Ensure date inputs look like your text inputs */
 input[type="date"] {
     width: 100%;
     padding: 10px;
@@ -725,23 +631,14 @@ input[type="date"] {
     font-family: inherit;
 }
 
-/* Ensure the table cell doesn't clip the card */
-.sticky-col {
-    overflow: visible !important;
-    position: sticky;
-    left: 0;
-    background: var(--surface-color, #fff);
-    z-index: 10;
-}
+/* ═══ HABIT INFO WRAPPER & CARD POPOVER ═══ */
 
-/* Base Wrapper */
 .habit-info-wrapper {
     position: relative;
     display: inline-block;
     cursor: help;
 }
 
-/* Premium Card - Hidden by default */
 .habit-card-popover {
     display: none; 
     position: absolute;
@@ -759,7 +656,6 @@ input[type="date"] {
     animation: habitPop 0.2s ease-out;
 }
 
-/* Show on Hover */
 .habit-info-wrapper:hover .habit-card-popover {
     display: flex;
 }
@@ -777,6 +673,8 @@ input[type="date"] {
 .card-body p { margin: 0; font-size: 13px; color: #334155; line-height: 1.4; }
 .card-body p.empty-state { font-style: italic; color: #cbd5e1; }
 
+/* ═══ ANALYTICS CONTAINER ═══ */
+
 .analytics-container { padding: 20px; color: var(--card-text); }
 .stat-card, .chart-card, .habits-list { 
     background: var(--card-bg); 
@@ -789,3 +687,100 @@ input[type="date"] {
 .progress-bar { background: var(--card-border); border-radius: 10px; height: 8px; width: 120px; }
 .heatmap { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; }
 .heatmap-day { width: 100%; aspect-ratio: 1; border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════════════
+    RESPONSIVE & MOBILE ADAPTIVE DESIGN
+    ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    width: 260px;
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-2xl);
+  }
+}
+
+@media (max-width: 768px) {
+    /* Spreadsheet Grid Mobile Adjustments */
+    .habits-spreadsheet-container {
+        overflow-x: auto;
+        padding: var(--space-2);
+        max-height: none; 
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .habits-spreadsheet table {
+        width: 1200px; /* Minimum width to prevent cell crushing */
+        table-layout: auto;
+    }
+
+    .sticky-col {
+        min-width: 120px;
+        width: 120px;
+        font-size: 12px;
+        padding: 0 var(--space-2) !important;
+    }
+
+    .habits-spreadsheet th:not(.sticky-col), 
+    .habits-spreadsheet td:not(.sticky-col) {
+        width: 44px;
+        height: 44px;
+        font-size: 12px;
+    }
+
+    .habit-checkbox {
+        width: 32px; 
+        height: 32px;
+        border-radius: 8px;
+    }
+
+    .mobile-hide {
+        display: none;
+    }
+
+    /* Swipe hint for user experience */
+    .habits-spreadsheet-container::after {
+        content: '← Swipe for dates →';
+        display: block;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-secondary);
+        padding: var(--space-2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    padding: var(--space-4);
+  }
+  
+  .page-header,
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
