@@ -1,14 +1,9 @@
-/* ═══════════════════════════════════════════════════════════
-    AXIOM // DASHBOARD
-    Main application layout - All colors from variables.css
-    ═══════════════════════════════════════════════════════════ */
-
 @import url('variables.css');
 @import url('themes.css');
 
 /* ═══════════════════════════════════════════════════════════
-    RESET & BASE
-    ═══════════════════════════════════════════════════════════ */
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
 
 * {
   margin: 0;
@@ -28,8 +23,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-    DASHBOARD LAYOUT
-    ═══════════════════════════════════════════════════════════ */
+   DASHBOARD LAYOUT
+   ═══════════════════════════════════════════════════════════ */
 
 .dashboard {
   display: grid;
@@ -39,8 +34,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-    SIDEBAR (MINIMALIST DESIGN)
-    ═══════════════════════════════════════════════════════════ */
+   SIDEBAR (MINIMALIST DESIGN)
+   ═══════════════════════════════════════════════════════════ */
 
 .sidebar {
   background: var(--bg-primary);
@@ -223,8 +218,8 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-    MAIN CONTENT AREA
-    ═══════════════════════════════════════════════════════════ */
+   MAIN CONTENT AREA
+   ═══════════════════════════════════════════════════════════ */
 
 .main-content {
   background: var(--bg-base);
@@ -416,86 +411,7 @@ body {
   border-color: var(--border-strong);
 }
 
-.btn-sm {
-  padding: var(--space-2) var(--space-4);
-  background: var(--primary);
-  border: none;
-  border-radius: var(--radius-md);
-  color: var(--text-inverse);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-  cursor: pointer;
-  transition: all var(--duration-200) var(--ease-out);
-}
-
-.btn-sm:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glow-primary);
-}
-
-/* ═══ EMPTY STATES ═══ */
-
-.empty-state {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
-  background: var(--bg-primary);
-  border: var(--border-1) solid var(--border-base);
-  border-radius: var(--radius-2xl);
-  margin: var(--space-8) auto;
-  max-width: 500px;
-}
-
-.empty-state svg {
-  width: 64px;
-  height: 64px;
-  stroke: var(--text-tertiary);
-  opacity: var(--opacity-30);
-  margin-bottom: var(--space-6);
-}
-
-.empty-state h3 {
-  font-size: var(--text-xl);
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
-}
-
-.empty-state p {
-  color: var(--text-secondary);
-  margin-bottom: var(--space-6);
-}
-
-.empty-state-mini {
-  text-align: center;
-  padding: var(--space-8);
-  color: var(--text-tertiary);
-}
-
-.empty-state-mini p {
-  margin-bottom: var(--space-4);
-  font-size: var(--text-sm);
-}
-
-.content-placeholder {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
-  background: var(--bg-primary);
-  border: 2px dashed var(--border-base);
-  border-radius: var(--radius-2xl);
-  margin: var(--space-8) 0;
-}
-
-.content-placeholder h2 {
-  font-size: var(--text-3xl);
-  margin-bottom: var(--space-2);
-  color: var(--text-primary);
-}
-
-.content-placeholder p {
-  color: var(--text-tertiary);
-}
-
-/* ═══ SPREADSHEET GRID (The "Axiom" No-Scroll Edition) ═══ */
-
+/* ═══ SPREADSHEET GRID ═══ */
 .habits-spreadsheet-container {
     width: 100%;
     overflow-x: hidden;
@@ -503,7 +419,6 @@ body {
     border: var(--border-1) solid var(--border-base);
     border-radius: var(--radius-2xl);
     padding: var(--space-2);
-    scrollbar-width: thin;
 }
 
 .habits-spreadsheet table {
@@ -524,7 +439,7 @@ body {
     font-weight: 600;
     font-size: clamp(10px, 0.8vw, 14px);
     white-space: nowrap;
-    overflow: visible !important;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -563,17 +478,6 @@ body {
     box-shadow: 0 0 8px var(--primary-glow);
 }
 
-.habit-checkbox.has-note::after {
-    content: '';
-    position: absolute;
-    top: 15%;
-    right: 15%;
-    width: 4px;
-    height: 4px;
-    background: #fbbf24;
-    border-radius: 50%;
-}
-
 .today-highlight {
     background: var(--primary-glow-subtle) !important;
     color: var(--primary);
@@ -581,116 +485,22 @@ body {
     outline: 1px inset var(--primary);
 }
 
-/* ═══ MODAL & FORM STYLES ═══ */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-overlay);
-    backdrop-filter: var(--backdrop-blur);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: var(--z-modal);
-    padding: var(--space-4);
-}
-
-.modal-card {
-    background: var(--bg-primary);
-    border: var(--border-1) solid var(--border-base);
-    border-radius: var(--radius-2xl);
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--shadow-2xl);
-}
-
-.field-help-text {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    margin-top: 6px;
-    font-style: italic;
-    min-height: 1.2em;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: #f8fafc;
-    font-family: inherit;
-}
-
-/* ═══ HABIT INFO WRAPPER & CARD POPOVER ═══ */
-
-.habit-info-wrapper {
-    position: relative;
-    display: inline-block;
-    cursor: help;
-}
-
-.habit-card-popover {
-    display: none; 
-    position: absolute;
-    left: calc(100% + 15px);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 260px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    z-index: 1000;
-    overflow: hidden;
-    pointer-events: none;
-    animation: habitPop 0.2s ease-out;
-}
-
-.habit-info-wrapper:hover .habit-card-popover {
-    display: flex;
-}
-
-@keyframes habitPop {
-    from { opacity: 0; transform: translateY(-50%) translateX(-10px); }
-    to { opacity: 1; transform: translateY(-50%) translateX(0); }
-}
-
-.card-accent { width: 6px; flex-shrink: 0; }
-.card-content { padding: 15px; flex-grow: 1; text-align: left; }
-.card-meta { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; }
-.card-title { margin: 4px 0 10px; font-size: 15px; color: #1e293b; }
-.card-body label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 2px; }
-.card-body p { margin: 0; font-size: 13px; color: #334155; line-height: 1.4; }
-.card-body p.empty-state { font-style: italic; color: #cbd5e1; }
-
-/* ═══ ANALYTICS CONTAINER ═══ */
-
-.analytics-container { padding: 20px; color: var(--card-text); }
+/* ═══════════════════════════════════════════════════════════
+   ANALYTICS & STATS
+   ═══════════════════════════════════════════════════════════ */
+.analytics-container { padding: 20px; color: var(--text-primary); }
 .stat-card, .chart-card, .habits-list { 
-    background: var(--card-bg); 
-    border: 1px solid var(--card-border); 
-    border-radius: 12px; 
+    background: var(--bg-primary); 
+    border: 1px solid var(--border-base); 
+    border-radius: var(--radius-2xl); 
     padding: 20px;
     margin-bottom: 20px;
 }
-.stat-value { color: var(--card-text); font-size: 2rem; font-weight: bold; }
-.progress-bar { background: var(--card-border); border-radius: 10px; height: 8px; width: 120px; }
-.heatmap { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; }
-.heatmap-day { width: 100%; aspect-ratio: 1; border-radius: 4px; }
+.stat-value { font-size: 2rem; font-weight: bold; color: var(--primary); }
 
 /* ═══════════════════════════════════════════════════════════
-    RESPONSIVE & MOBILE ADAPTIVE DESIGN
-    ═══════════════════════════════════════════════════════════ */
+   MOBILE ADAPTIVE (ULTIMATE FIX)
+   ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
   .dashboard {
@@ -704,6 +514,7 @@ input[type="date"] {
     z-index: var(--z-modal);
     transform: translateX(-100%);
     width: 260px;
+    transition: transform var(--duration-300) ease;
   }
   
   .sidebar.mobile-open {
@@ -713,74 +524,190 @@ input[type="date"] {
 }
 
 @media (max-width: 768px) {
-    /* Spreadsheet Grid Mobile Adjustments */
+    .page-container {
+        padding: var(--space-4);
+    }
+
+    /* Spreadsheet becomes scrollable on mobile */
     .habits-spreadsheet-container {
         overflow-x: auto;
-        padding: var(--space-2);
-        max-height: none; 
         -webkit-overflow-scrolling: touch;
     }
 
     .habits-spreadsheet table {
-        width: 1200px; /* Minimum width to prevent cell crushing */
+        width: 1200px; /* Minimum width to prevent crushing cells */
         table-layout: auto;
     }
 
     .sticky-col {
-        min-width: 120px;
-        width: 120px;
-        font-size: 12px;
-        padding: 0 var(--space-2) !important;
+        min-width: 140px;
+        font-size: 13px;
     }
 
     .habits-spreadsheet th:not(.sticky-col), 
     .habits-spreadsheet td:not(.sticky-col) {
-        width: 44px;
-        height: 44px;
-        font-size: 12px;
+        width: 45px;
+        height: 45px;
     }
 
     .habit-checkbox {
-        width: 32px; 
-        height: 32px;
-        border-radius: 8px;
+        width: 28px;
+        height: 28px;
     }
 
-    .mobile-hide {
-        display: none;
-    }
-
-    /* Swipe hint for user experience */
-    .habits-spreadsheet-container::after {
-        content: '← Swipe for dates →';
-        display: block;
-        text-align: center;
-        font-size: 10px;
-        color: var(--text-secondary);
-        padding: var(--space-2);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .page-header h1 {
+        font-size: var(--text-2xl);
     }
 }
 
 @media (max-width: 640px) {
-  .page-container {
-    padding: var(--space-4);
-  }
-  
   .page-header,
   .top-bar {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--space-4);
   }
 
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .top-actions {
+    width: 100%;
   }
 
   .btn-primary, .btn-secondary {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HABIT CARD POPOVER
+   ═══════════════════════════════════════════════════════════ */
+.habit-info-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.habit-card-popover {
+    display: none; 
+    position: absolute;
+    left: calc(100% + 15px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 260px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-base);
+    border-radius: 12px;
+    box-shadow: var(--shadow-2xl);
+    z-index: 1000;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.habit-info-wrapper:hover .habit-card-popover {
+    display: flex;
+}
+
+.card-accent { width: 6px; background: var(--primary); flex-shrink: 0; }
+.card-content { padding: 15px; flex-grow: 1; text-align: left; }
+.card-title { font-weight: bold; color: var(--text-primary); margin-bottom: 8px; }
+.card-body p { font-size: 13px; color: var(--text-secondary); }
+
+
+@media (max-width: 1024px) {
+  /* 1. Change the Grid Layout to stack vertically */
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto; /* Content on top, Nav on bottom */
+  }
+
+  /* 2. Reposition Sidebar to be a Bottom Bar */
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    top: auto; /* Overrides the top: 0 in your current code */
+    width: 100%;
+    height: 68px; /* Standard mobile nav height */
+    flex-direction: row; /* Layout icons horizontally */
+    border-right: none;
+    border-top: var(--border-1) solid var(--border-base);
+    background: var(--bg-primary);
+    transform: translateX(0); /* Ensure it is ALWAYS visible */
+    padding: 0 var(--space-4);
+    justify-content: space-between;
+    align-items: center;
+    transition: none; 
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  }
+
+  /* 3. Hide non-essential elements for the bottom bar */
+  .sidebar-header, 
+  .nav-divider, 
+  .logout-btn {
+    display: none !important;
+  }
+
+  /* 4. Center and space out the icons */
+  .sidebar-nav {
+    flex-direction: row;
+    padding: 0;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .nav-item {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Indicator for the active tab */
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    width: 12px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: var(--radius-full);
+  }
+
+  /* 5. Adjust the footer (avatar) */
+  .sidebar-footer {
+    border-top: none;
+    padding: 0;
+    margin-left: var(--space-2);
+  }
+
+  .user-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* 6. CRITICAL: Prevent content from hiding behind the nav bar */
+  .main-content {
+    height: calc(100vh - 68px);
+    padding-bottom: 20px;
+  }
+}
+
+/* 7. Spreadsheet optimization for smaller screens */
+@media (max-width: 768px) {
+  .habits-spreadsheet-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 80px; /* Extra breathing room */
+  }
+
+  .habits-spreadsheet table {
+    width: 1000px; /* Prevents cells from getting too small to tap */
+    table-layout: auto;
+  }
+
+  .sticky-col {
+    min-width: 120px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
   }
 }
