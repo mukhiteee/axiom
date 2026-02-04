@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/gateway.css">
+
+  <link rel="manifest" href="manifest.json">
   
   <!-- Theme MUST load before page renders -->
   <script src="js/theme.js"></script>
